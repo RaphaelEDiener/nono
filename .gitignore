@@ -1,0 +1,10 @@
+/bin/*
+*.class
+*.ppm
+*.pgm
+*.pbm
+*.png
+*.jpeg
+*.jpg
+
+
