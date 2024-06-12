@@ -26,5 +26,5 @@ Afterwards you will find the `.jar` file inside the projects root directory.
 
 ### Sources used during Development
 
-- 
+- [Oracle Java documentation](https://docs.oracle.com/en/java/javase/22/)
 
