@@ -37,4 +37,5 @@ The final submission should...
 - The documentation in external files or inside the `/docs` folder should be done with `Markdown` 
   and only for the submission be automatically transformed into a `PDF`.
 - Ask one another for help instead of ChatGPT
+- JDK version 21 or newer
 
