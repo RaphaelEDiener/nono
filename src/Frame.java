@@ -1,11 +1,11 @@
 package src;
 import java.text.MessageFormat;
 
-class Frame {
-    final int width;
-    final int height;
-    final char[] chars;
-
+record Frame(
+    int width,
+    int height,
+    char[] chars
+) {
     public Frame(int width, int height, char[] chars) {
         assert width >= 0 : 
         MessageFormat.format("Frame width ({0}) needs to be positive", width);
