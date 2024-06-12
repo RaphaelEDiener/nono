@@ -10,8 +10,11 @@ mkdir %CD%\bin 1>nul 2>nul
 :: compile
 javac ^
   -deprecation ^
+  -Xlint:unchecked ^
   -d %CD%\bin\ ^
   %CD%\src\Main.java ^
+  %CD%\src\Pair.java ^
+  %CD%\src\Window.java ^
   %CD%\src\Frame.java 
 
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -19,6 +22,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd bin
 jar -cfm nono.jar manifest ^
   src\Main.class ^
+  src\Pair.class ^
+  src\Window.class ^
   src\Frame.class
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd ..

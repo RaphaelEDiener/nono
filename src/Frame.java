@@ -1,12 +1,14 @@
 package src;
 import java.text.MessageFormat;
+import java.lang.UnsupportedOperationException;
+import java.util.Optional;
 
-record Frame(
-    int width,
-    int height,
-    char[] chars
-) {
-    public Frame(int width, int height, char[] chars) {
+class Frame {
+    final int width;
+    final int height;
+    final char[] chars;
+
+    Frame(int width, int height, char[] chars) {
         assert width >= 0 : 
         MessageFormat.format("Frame width ({0}) needs to be positive", width);
         assert height >= 0 : 
