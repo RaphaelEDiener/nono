@@ -3,9 +3,7 @@ package src;
 import src.*;
 import java.util.Optional;
 import java.lang.ProcessBuilder;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import java.io.*;
 
 /**
  * the window class is our IO class.
@@ -33,12 +31,37 @@ class Window {
     /**
      * Issues a single print
      */
-    static void flush(final Frame frame, final Pair<Integer, Integer> cursor) {
+    static void flush(final Frame frame, final Cursor cursor) {
         var chars = frame.chars.clone();
-        chars[cursor.first + frame.width * cursor.second] = "\u2588";
+        chars[cursor.x + frame.width * cursor.y] = cursor.symbol;
         System.out.print("\u001B[H" + String.join("", chars) + "\u001B[H");
     }
 
+    static Optional<Pair<Integer, Integer>> dimensions() {
+        String os_name = System.getProperty("os.name").toLowerCase();
+        return switch (os_name) {
+            case String name when name.contains("windows") -> windows_dimensions();
+            case String name when name.contains("linux") -> linux_dimensions();
+            default -> Optional.empty();
+        };
+    }
+
+    static Pair<Frame, Cursor> update(
+        final Frame last_frame, 
+        final Cursor last_cursor,
+        final Keys key
+    ) {
+        var new_frame = new Frame(last_frame); 
+        var new_cursor = switch (key) {
+            case UP    -> last_cursor.up(1);
+            case DOWN  -> last_cursor.down(1);
+            case LEFT  -> last_cursor.left(1);
+            case RIGHT -> last_cursor.right(1);
+            default    -> new Cursor(last_cursor);
+        };
+        return new Pair<Frame, Cursor>(new_frame, new_cursor);
+    }
+    
     private static Optional<Pair<Integer, Integer>> windows_dimensions() {
         ProcessBuilder pb = new ProcessBuilder(
             "powershell", 
@@ -69,34 +92,5 @@ class Window {
     private static Optional<Pair<Integer, Integer>> linux_dimensions() {
         System.out.println("Linux not supported yet"); 
         return Optional.empty();
-    }
-
-    public static Optional<Pair<Integer, Integer>> dimensions() {
-        String os_name = System.getProperty("os.name").toLowerCase();
-        return switch (os_name) {
-            case String name when name.contains("windows") -> windows_dimensions();
-            case String name when name.contains("linux") -> linux_dimensions();
-            default -> Optional.empty();
-        };
-    }
-
-    static Pair<Frame, Pair<Integer,Integer>> update(
-        final Frame last_frame, 
-        final Pair<Integer,Integer> last_cursor,
-        final Keys key
-    ) {
-        var new_frame = new Frame(last_frame); 
-        var new_cursor = new Pair<Integer,Integer>(last_cursor.first, last_cursor.second);
-        switch (key) {
-            case UP: new_cursor.second > 0 ? new_cursor.second-- : break;
-            case DOWN;
-            case LEFT;
-            case RIGHT;
-            case CONFIRM;
-            case BACK;
-            case MARK;
-            case DELETE;
-        };
-        return new Pair<Frame, Pair<Integer,Integer>>(new_frame, new_cursor);
     }
 }

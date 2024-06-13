@@ -34,6 +34,15 @@ class Cursor {
         this.max_y = max_y;
         this.symbol = symbol;
     }
+    Cursor(
+        final Cursor old 
+    ) {
+        this.x = old.x;
+        this.y = old.y;
+        this.max_x = old.max_x;
+        this.max_y = old.max_y;
+        this.symbol = old.symbol;
+    }
 
     Cursor up(final int amount) {
         assert amount >= 0 : 

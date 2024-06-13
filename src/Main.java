@@ -19,19 +19,18 @@ public class Main {
         if (x.isEmpty()) {return;}
         var frame = Frame.empty(x.get());
         // TODO: promote cursor to class (i guess)
-        var cursor = new Pair<Integer, Integer> (0, 0);
-        Window.clear();
+        var cursor = new Cursor(0, 0, "\u2588", frame);
+        Window.test(frame);
         while (true) {
             try {
                 var key_op = Keys.from_console_in(System.in.read());
-                if (key_op.isEmpty()) {continue} 
+                if (key_op.isEmpty()) {continue;}
                 else {
                     var new_ = Window.update(frame, cursor, key_op.get());
                     frame = new_.first;
                     cursor = new_.second;
                     Window.flush(frame, cursor);
                 }
-            }
             } catch (IOException ignore) {
                 // Exit program
             }

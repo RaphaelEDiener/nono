@@ -26,6 +26,7 @@ jar -cfm nono.jar manifest ^
   src\Main.class ^
   src\Pair.class ^
   src\Window.class ^
+  src\Window$1.class ^
   src\Keys.class ^
   src\Cursor.class ^
   src\Frame.class
