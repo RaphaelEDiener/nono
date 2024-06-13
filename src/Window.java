@@ -18,7 +18,7 @@ class Window {
         for (int y = 0; y < frame.height; y++) {
             for (int x = 0; x < frame.width; x++) { 
                 System.out.print(
-                    "\u001B[" + (y+1) + ";" + (x+1) + "H" + "\u2588"
+                    "\u001B[" + (y+1) + ";" + (x+1) + "H" // + "\u2588"
                 );
             }
         }
@@ -37,12 +37,12 @@ class Window {
         System.out.print("\u001B[H" + String.join("", chars) + "\u001B[H");
     }
 
-    static Optional<Pair<Integer, Integer>> dimensions() {
-        String os_name = System.getProperty("os.name").toLowerCase();
-        return switch (os_name) {
-            case String name when name.contains("windows") -> windows_dimensions();
-            case String name when name.contains("linux") -> linux_dimensions();
-            default -> Optional.empty();
+    static Optional<Pair<Integer, Integer>> dimensions(final OSys os) {
+        OSys this_os = (os == OSys.UNKNOWN) ? OSys.from_sys_prop() : os;
+        return switch (this_os) {
+            case WINDOWS -> windows_dimensions();
+            case LINUX   -> linux_dimensions();
+            case UNKNOWN -> Optional.empty();
         };
     }
 
@@ -90,7 +90,23 @@ class Window {
     }
 
     private static Optional<Pair<Integer, Integer>> linux_dimensions() {
-        System.out.println("Linux not supported yet"); 
+        try {
+            System.out.print("\u001B[H\u001B[500;500H");
+            System.out.print("\u001B[6n");
+            var read = System.in.read();
+            while (read != 'R') {
+                // discard until '['
+                // collect until ';' -> height
+                // collect until 'R' -> width
+                // bytes form string -> '5' '0'
+                System.out.println(read);
+                read = System.in.read();
+            }
+            System.out.print("\u001B[H");
+        } catch (IOException e) {
+
+        }
+       System.out.println("HERE IN LINUX"); 
         return Optional.empty();
     }
 }

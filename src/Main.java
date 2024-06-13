@@ -5,6 +5,8 @@ import src.*;
 import java.io.*;
 
 public class Main {
+
+
     public static void main (String[] args) {
         // Get windows size
         // unix systems: 
@@ -12,13 +14,11 @@ public class Main {
         // "\x1b[5000;5000H"    // move to col 5000 row 5000
         // "\x1b[6n"            // request cursor position
         // "\x1b[H"             // home
-        // Frame b = new Frame(-1, 0, new char[]{});
-        // Frame c = new Frame(0, -1, new char[]{});
-        // Frame d = new Frame(1, 1, new char[]{});
-        var x = Window.dimensions();
-        if (x.isEmpty()) {return;}
-        var frame = Frame.empty(x.get());
-        // TODO: promote cursor to class (i guess)
+
+        Optional<Pair<Integer, Integer>> dim_op = 
+            Window.dimensions(OSys.from_args(args));
+        if (dim_op.isEmpty()) {return;}
+        var frame = Frame.empty(dim_op.get());
         var cursor = new Cursor(0, 0, "\u2588", frame);
         Window.test(frame);
         while (true) {
@@ -37,3 +37,4 @@ public class Main {
         }
     }
 }
+
