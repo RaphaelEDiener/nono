@@ -80,10 +80,23 @@ class Window {
         };
     }
 
-    static Pair<Frame, Pair<Integer,Integer>> update(final Frame last_frame, final Pair<Integer,Integer> last_cursor) {
-        return new Pair<Frame, Pair<Integer,Integer>>(
-            new Frame(last_frame), 
-            new Pair<Integer,Integer>(last_cursor.first, last_cursor.second)
-        );
+    static Pair<Frame, Pair<Integer,Integer>> update(
+        final Frame last_frame, 
+        final Pair<Integer,Integer> last_cursor,
+        final Keys key
+    ) {
+        var new_frame = new Frame(last_frame); 
+        var new_cursor = new Pair<Integer,Integer>(last_cursor.first, last_cursor.second);
+        switch (key) {
+            case UP: new_cursor.second > 0 ? new_cursor.second-- : break;
+            case DOWN;
+            case LEFT;
+            case RIGHT;
+            case CONFIRM;
+            case BACK;
+            case MARK;
+            case DELETE;
+        };
+        return new Pair<Frame, Pair<Integer,Integer>>(new_frame, new_cursor);
     }
 }

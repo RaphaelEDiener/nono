@@ -23,15 +23,15 @@ public class Main {
         Window.clear();
         while (true) {
             try {
-                switch (Keys.from_console_in(System.in.read())) {
-                    case Optional<Keys> empty when empty.isEmpty(): continue;
-                    default: {
-                        var new_ = Window.update(frame, cursor);
-                        frame = new_.first;
-                        cursor = new_.second;
-                        Window.flush(frame, cursor);
-                    };
+                var key_op = Keys.from_console_in(System.in.read());
+                if (key_op.isEmpty()) {continue} 
+                else {
+                    var new_ = Window.update(frame, cursor, key_op.get());
+                    frame = new_.first;
+                    cursor = new_.second;
+                    Window.flush(frame, cursor);
                 }
+            }
             } catch (IOException ignore) {
                 // Exit program
             }
