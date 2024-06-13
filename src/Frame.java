@@ -7,14 +7,14 @@ import java.util.stream.*;
 class Frame {
     final int width;
     final int height;
-    final char[] chars;
+    final String[] chars; // why must chars be an string array? because java can't unicode
 
 
     Frame(final Frame old) {
-        return new Frame(old.width, old.height, old.chars.clone())   
+        this(old.width, old.height, old.chars.clone());
     }
 
-    Frame(final int width, final int height, final char[] chars) {
+    Frame(final int width, final int height, final String[] chars) {
         assert width >= 0 : 
         MessageFormat.format("Frame width ({0}) needs to be positive", width);
         assert height >= 0 : 
@@ -31,8 +31,8 @@ class Frame {
         MessageFormat.format("Frame width ({0}) needs to be positive", width);
         assert height >= 0 : 
         MessageFormat.format("Frame height ({0}) needs to be positive", height);
-        final char[] chars = new char[width*height];
-        Arrays.fill(chars, ' ');
+        final String[] chars = new String[width*height];
+        Arrays.fill(chars, " ");
         return new Frame(width, height, chars);
     }
     

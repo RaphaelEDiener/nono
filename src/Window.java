@@ -1,6 +1,6 @@
 package src;
 
-import src.Pair;
+import src.*;
 import java.util.Optional;
 import java.lang.ProcessBuilder;
 import java.io.IOException;
@@ -16,10 +16,12 @@ class Window {
     /**
      * manually updates every character
      */
-    static void draw(final Frame frame) {
+    static void test(final Frame frame) {
         for (int y = 0; y < frame.height; y++) {
             for (int x = 0; x < frame.width; x++) { 
-                System.out.print("\u001B[" + (y+1) + ";" + (x+1) + "H" + frame.chars[y*frame.width + x]);
+                System.out.print(
+                    "\u001B[" + (y+1) + ";" + (x+1) + "H" + "\u2588"
+                );
             }
         }
     }
@@ -33,8 +35,8 @@ class Window {
      */
     static void flush(final Frame frame, final Pair<Integer, Integer> cursor) {
         var chars = frame.chars.clone();
-        chars[cursor.first + frame.width * cursor.second] = 254;
-        System.out.print("\u001B[H" + new String(chars));
+        chars[cursor.first + frame.width * cursor.second] = "\u2588";
+        System.out.print("\u001B[H" + String.join("", chars) + "\u001B[H");
     }
 
     private static Optional<Pair<Integer, Integer>> windows_dimensions() {
@@ -79,6 +81,9 @@ class Window {
     }
 
     static Pair<Frame, Pair<Integer,Integer>> update(final Frame last_frame, final Pair<Integer,Integer> last_cursor) {
-        return new Pair<Frame, Pair<Integer,Integer>>(Frame(last_frame), Pair(last_cursor))
+        return new Pair<Frame, Pair<Integer,Integer>>(
+            new Frame(last_frame), 
+            new Pair<Integer,Integer>(last_cursor.first, last_cursor.second)
+        );
     }
 }

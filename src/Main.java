@@ -1,4 +1,6 @@
 package src;
+
+import java.util.Optional;
 import src.*;
 import java.io.*;
 
@@ -17,16 +19,16 @@ public class Main {
         if (x.isEmpty()) {return;}
         var frame = Frame.empty(x.get());
         // TODO: promote cursor to class (i guess)
-        var cursor = new Pair<Integer, Interger> (0, 0);
+        var cursor = new Pair<Integer, Integer> (0, 0);
         Window.clear();
         while (true) {
             try {
-                switch (Keys.from_colole_in(System.in.read())) {
-                    case Option<Keys> x when x.isEmpty(): continue;
+                switch (Keys.from_console_in(System.in.read())) {
+                    case Optional<Keys> empty when empty.isEmpty(): continue;
                     default: {
-                        var new = Window.update(frame, cursor);
-                        frame = new.first;
-                        cursor = new.second;
+                        var new_ = Window.update(frame, cursor);
+                        frame = new_.first;
+                        cursor = new_.second;
                         Window.flush(frame, cursor);
                     };
                 }

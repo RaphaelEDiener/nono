@@ -1,3 +1,7 @@
+package src;
+
+import java.util.Optional;
+
 enum Keys {
     UP,
     DOWN,
@@ -6,9 +10,9 @@ enum Keys {
     CONFIRM,
     BACK,
     MARK,
-    DELETE,
+    DELETE;
 
-    public static Option<Key> from_console_in(final int in) {
+    public static Optional<Keys> from_console_in(final int in) {
         return switch (in) {
             case 107 -> Optional.of(Keys.UP);
             case  65 -> Optional.of(Keys.UP);
@@ -23,6 +27,6 @@ enum Keys {
             case  32 -> Optional.of(Keys.MARK);
             case 102 -> Optional.of(Keys.DELETE);
             default -> Optional.empty();
-        }
+        };
     }
 }
