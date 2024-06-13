@@ -15,6 +15,7 @@ javac ^
   %CD%\src\Main.java ^
   %CD%\src\Pair.java ^
   %CD%\src\Window.java ^
+  %CD%\src\Keys.java ^
   %CD%\src\Frame.java 
 
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -24,6 +25,7 @@ jar -cfm nono.jar manifest ^
   src\Main.class ^
   src\Pair.class ^
   src\Window.class ^
+  src\Keys.class ^
   src\Frame.class
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd ..

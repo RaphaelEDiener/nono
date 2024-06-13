@@ -9,11 +9,12 @@ class Frame {
     final int height;
     final char[] chars;
 
-    static private char space(Object ignore) {
-        return (char) ' ';
+
+    Frame(final Frame old) {
+        return new Frame(old.width, old.height, old.chars.clone())   
     }
 
-    Frame(int width, int height, char[] chars) {
+    Frame(final int width, final int height, final char[] chars) {
         assert width >= 0 : 
         MessageFormat.format("Frame width ({0}) needs to be positive", width);
         assert height >= 0 : 
@@ -25,7 +26,7 @@ class Frame {
         this.chars = chars;
     }
 
-    static Frame empty(int width, int height) {
+    static Frame empty(final int width, final int height) {
         assert width >= 0 : 
         MessageFormat.format("Frame width ({0}) needs to be positive", width);
         assert height >= 0 : 
@@ -35,7 +36,7 @@ class Frame {
         return new Frame(width, height, chars);
     }
     
-    static Frame empty(Pair<Integer, Integer> pair) {
+    static Frame empty(final Pair<Integer, Integer> pair) {
         return Frame.empty(pair.first, pair.second);
     }
 }

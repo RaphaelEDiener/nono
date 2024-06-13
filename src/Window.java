@@ -13,35 +13,28 @@ import java.io.BufferedReader;
  */
 class Window {
 
-    private Frame cur_frame;
-    private Frame new_frame;
-//    private OutStreamWriter out;
-
-    public Window(
-        Frame cur_frame,
-        Frame new_frame
-    ) {
-        this.cur_frame = cur_frame;
-        this.new_frame = new_frame;
-  //      this.out = new OutStreamWriter(System.out, StandardCharsets.UTF_8)
-    }
-
     /**
      * manually updates every character
      */
-    void draw() {
-        for (int y = 0; y < cur_frame.height; y++) {
-            for (int x = 0; x < cur_frame.width; x++) { 
-                System.out.print("\u001B[" + (y+1) + ";" + (x+1) + "H" + cur_frame.chars[y*cur_frame.width + x]);
+    static void draw(final Frame frame) {
+        for (int y = 0; y < frame.height; y++) {
+            for (int x = 0; x < frame.width; x++) { 
+                System.out.print("\u001B[" + (y+1) + ";" + (x+1) + "H" + frame.chars[y*frame.width + x]);
             }
         }
+    }
+
+    static void clear() {
+        System.out.print("\u001B[2J\u001B[H");
     }
 
     /**
      * Issues a single print
      */
-    void clear() {
-        System.out.print("\u001B[H" + new String(cur_frame.chars));
+    static void flush(final Frame frame, final Pair<Integer, Integer> cursor) {
+        var chars = frame.chars.clone();
+        chars[cursor.first + frame.width * cursor.second] = 254;
+        System.out.print("\u001B[H" + new String(chars));
     }
 
     private static Optional<Pair<Integer, Integer>> windows_dimensions() {
@@ -71,12 +64,21 @@ class Window {
         return Optional.of(new Pair<Integer, Integer>(x, y));
     }
 
+    private static Optional<Pair<Integer, Integer>> linux_dimensions() {
+        System.out.println("Linux not supported yet"); 
+        return Optional.empty();
+    }
+
     public static Optional<Pair<Integer, Integer>> dimensions() {
         String os_name = System.getProperty("os.name").toLowerCase();
         return switch (os_name) {
             case String name when name.contains("windows") -> windows_dimensions();
+            case String name when name.contains("linux") -> linux_dimensions();
             default -> Optional.empty();
         };
     }
 
+    static Pair<Frame, Pair<Integer,Integer>> update(final Frame last_frame, final Pair<Integer,Integer> last_cursor) {
+        return new Pair<Frame, Pair<Integer,Integer>>(Frame(last_frame), Pair(last_cursor))
+    }
 }
