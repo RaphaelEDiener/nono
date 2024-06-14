@@ -36,8 +36,20 @@ class Frame {
         Arrays.fill(chars, " ");
         return new Frame(width, height, chars);
     }
+    static Frame full(final int width, final int height) {
+        assert width >= 0 : 
+        MessageFormat.format("Frame width ({0}) needs to be positive", width);
+        assert height >= 0 : 
+        MessageFormat.format("Frame height ({0}) needs to be positive", height);
+        final String[] chars = new String[width*height];
+        Arrays.fill(chars, "█");
+        return new Frame(width, height, chars);
+    }
     
     static Frame empty(final Pair<Integer, Integer> pair) {
         return Frame.empty(pair.first, pair.second);
+    }
+    static Frame full(final Pair<Integer, Integer> pair) {
+        return Frame.full(pair.first, pair.second);
     }
 }

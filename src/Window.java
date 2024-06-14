@@ -2,6 +2,8 @@ package src;
 
 import src.*;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.lang.ProcessBuilder;
 import java.io.*;
 
@@ -14,11 +16,11 @@ class Window {
     /**
      * manually updates every character
      */
-    static void test(final Frame frame) {
+    static void test(final Frame frame, PrintWriter out) {
         for (int y = 0; y < frame.height; y++) {
             for (int x = 0; x < frame.width; x++) { 
-                System.out.print(
-                    "\u001B[" + (y+1) + ";" + (x+1) + "H" // + "\u2588"
+                out.print(
+                    "\u001B[" + (y+1) + ";" + (x+1) + "H" + "█" // + "\u2588"
                 );
             }
         }
@@ -31,10 +33,10 @@ class Window {
     /**
      * Issues a single print
      */
-    static void flush(final Frame frame, final Cursor cursor) {
+    static void flush(final Frame frame, final Cursor cursor, final PrintWriter out) {
         var chars = frame.chars.clone();
         chars[cursor.x + frame.width * cursor.y] = cursor.symbol;
-        System.out.print("\u001B[H" + String.join("", chars) + "\u001B[H");
+        out.print("\u001B[H" + String.join("", chars) + "\u001B[H");
     }
 
     static Optional<Pair<Integer, Integer>> dimensions(final OSys os) {
@@ -61,7 +63,7 @@ class Window {
         };
         return new Pair<Frame, Cursor>(new_frame, new_cursor);
     }
-    
+
     private static Optional<Pair<Integer, Integer>> windows_dimensions() {
         ProcessBuilder pb = new ProcessBuilder(
             "powershell", 
@@ -89,24 +91,43 @@ class Window {
         return Optional.of(new Pair<Integer, Integer>(x, y));
     }
 
+    private static Pair<Integer, Integer> parse_6n(List<Integer> in) {
+        var x = 0;
+        var y = 0;
+        // discard until '['
+        while (in.getFirst() != '[') {
+            in.removeFirst();
+        }
+        // ignore '[' 
+        in.removeFirst();
+        // collect until ';' -> height
+        while (in.getFirst() != ';') {
+            y = y*10 + in.removeFirst() - '0';
+        }
+        // ignore ';' 
+        in.removeFirst();
+        // collect until 'R' -> width
+        while (in.getFirst() != 'R') {
+            x = x*10 + in.removeFirst() - '0';
+        }
+        return new Pair<Integer, Integer>(x, y);
+    }
+
     private static Optional<Pair<Integer, Integer>> linux_dimensions() {
+        var dims = new Pair<Integer, Integer>(0, 0);
         try {
-            System.out.print("\u001B[H\u001B[500;500H");
-            System.out.print("\u001B[6n");
-            var read = System.in.read();
-            while (read != 'R') {
-                // discard until '['
-                // collect until ';' -> height
-                // collect until 'R' -> width
-                // bytes form string -> '5' '0'
-                System.out.println(read);
-                read = System.in.read();
+            System.out.print("\u001B[H\u001B[500;500H\u001B[6n");
+            var bytes = new ArrayList<Integer>();
+            bytes.add(System.in.read());
+            while (bytes.getLast() != 'R') {
+                bytes.add(System.in.read());
             }
+            dims = parse_6n(bytes);
             System.out.print("\u001B[H");
         } catch (IOException e) {
-
+            System.out.println(e.getMessage());
+            return Optional.empty();
         }
-       System.out.println("HERE IN LINUX"); 
-        return Optional.empty();
+        return Optional.of(dims);
     }
 }

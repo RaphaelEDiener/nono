@@ -9,6 +9,7 @@ IF %ERRORLEVEL% NEQ 0 winget install EclipseAdoptium.Temurin.21.JDK
 mkdir %CD%\bin 1>nul 2>nul
 :: compile
 javac ^
+  -encoding "utf-8" ^
   -deprecation ^
   -Xlint:all ^
   -d %CD%\bin\ ^

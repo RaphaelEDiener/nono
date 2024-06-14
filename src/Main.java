@@ -3,6 +3,7 @@ package src;
 import java.util.Optional;
 import src.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
 
@@ -18,9 +19,13 @@ public class Main {
         Optional<Pair<Integer, Integer>> dim_op = 
             Window.dimensions(OSys.from_args(args));
         if (dim_op.isEmpty()) {return;}
-        var frame = Frame.empty(dim_op.get());
-        var cursor = new Cursor(0, 0, "\u2588", frame);
-        Window.test(frame);
+        System.out.println(dim_op.get().first + " " + dim_op.get().second); 
+        var frame = Frame.full(dim_op.get());
+        var cursor = new Cursor(0, 0, "█", frame);
+        PrintWriter out = new PrintWriter(
+            new OutputStreamWriter(System.out, StandardCharsets.UTF_8)
+        );
+        Window.test(frame, out);
         while (true) {
             try {
                 var key_op = Keys.from_console_in(System.in.read());
@@ -29,7 +34,8 @@ public class Main {
                     var new_ = Window.update(frame, cursor, key_op.get());
                     frame = new_.first;
                     cursor = new_.second;
-                    Window.flush(frame, cursor);
+                    Window.clear();
+                    Window.flush(frame, cursor, out);
                 }
             } catch (IOException ignore) {
                 // Exit program
