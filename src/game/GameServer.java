@@ -29,33 +29,41 @@ public class GameServer {
     public void start() {
         while (true) {
             Socket connection = this.server.connect();
-            if (this.debug) this.print(connection.toString());
+            if (this.debug) {
+                this.print(connection.toString());
+            }
             var request = this.server.receive(connection);
-            if (this.debug) this.print(request.toString());
+            if (this.debug) {
+                this.print(request.toString());
+            }
             var cmd = GameCommands.from_request(request);
-            if (this.debug) this.print(cmd.toString());
-            if (cmd.isEmpty()) continue;
+            if (this.debug) {
+                this.print(cmd.toString());
+            }
+            if (cmd.isEmpty()) {
+                continue;
+            }
 
-            if (cmd.get() == GameCommands.GET_VIEW) {
-                var response = new Response(
-                        Protocol.HTTP1_1,
-                        StatusCode.OK,
-                        ContextType.TEXT_HTML,
-                        new Body(game.toHtml()).toHtml(),
-                        StandardCharsets.UTF_8
-                );
-                this.server.send(response, connection);
-            }
-            if (cmd.get() == GameCommands.DOWN) {
-                var response = new Response(
-                        Protocol.HTTP1_1,
-                        StatusCode.OK,
-                        ContextType.TEXT_HTML,
-                        game.innerHtml(),
-                        StandardCharsets.UTF_8
-                );
-                this.server.send(response, connection);
-            }
+            this.game = switch (cmd.get()) {
+                case UP -> this.game.up();
+                case DOWN -> this.game.down();
+                case LEFT -> this.game.left();
+                case RIGHT -> this.game.right();
+                default -> this.game;
+            };
+            var response_body = switch (cmd.get()) {
+                case UP, DOWN, RIGHT, LEFT -> game.innerHtml();
+                case BACK, CONFIRM, MARK -> "";
+                case GET_VIEW -> new Body(game.toHtml()).toHtml();
+            };
+            var response = new Response(
+                    Protocol.HTTP1_1,
+                    StatusCode.OK,
+                    ContextType.TEXT_HTML,
+                    response_body,
+                    StandardCharsets.UTF_8
+            );
+            this.server.send(response, connection);
         }
     }
 

@@ -1,11 +1,10 @@
 package src.html;
 
 public enum HTMXTrigger{
-    // KeyDown ("keydown[key=='s']"),
     KeyDown ("keydown[key=='ArrowDown']"),
-    KeyLeft ("keydown[key=='ArrowLeft]"),
-    KeyRight("keydown[key==39]"),
-    KeyUp("keydown[key==38]"),
+    KeyLeft ("keydown[key=='ArrowLeft']"),
+    KeyRight("keydown[key=='ArrowRight']"),
+    KeyUp("keydown[key=='ArrowUp']"),
     Click("click");
 
     private final String desc;
