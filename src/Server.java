@@ -3,7 +3,9 @@ package src;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.util.*;
 import src.html.*;
+import src.http.*;
 
 public class Server
 {
@@ -72,18 +74,29 @@ public class Server
     }
     // TODO: return error if failed
     private void respond(String message, Socket connection) {
-        var length = message.getBytes(StandardCharsets.UTF_8).length;
         try (var stream = connection.getOutputStream()) {
-            var response = """
-                        HTTP/1.1 200 OK
-                        Content-Type: text/html
-                        Content-Length: %d
-                        
-                        %s
-                        """.formatted(length, message);
-            System.out.println(response);
-            stream.write(response.getBytes(StandardCharsets.UTF_8));
+            var response = new Response(
+                    Protocol.HTTP1_1,
+                    StatusCode.OK,
+                    ContextType.TEXT_HTML,
+                    message,
+                    StandardCharsets.UTF_8
+            );
+            if (this.debug) System.out.println(response);
+            stream.write(response.getBytes());
         } catch (IOException ignore) {
+        }
+    }
+
+    private Optional<Request> receive(Socket connection) {
+        try {
+            var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            var line = reader.readLine();
+            if (this.debug) System.out.println(line);
+            return Optional.of(Request.from_raw(line));
+        }
+        catch (IOException ignored) {
+            return Optional.empty();
         }
     }
 
@@ -92,15 +105,17 @@ public class Server
             System.out.println(message);
         }
     }
-    public void start() {
+    public void start(Game game) {
         while (true) {
-            this.print("accepting...");
+            this.print("---- accepting... ----");
             Socket connection = this.connect();
-            this.print("connected!");
-            this.print("responding...");
-            var game = new Body(new Game(10,10).toString());
-            this.respond(game.toString(), connection);
-            this.print("responded!");
+            this.print("---- connected! ----");
+            this.print("---- receiving... ----");
+            var request = this.receive(connection);
+            this.print("---- received! ----");
+            this.print("---- responding... ----");
+            this.respond(new Body(game.toHtml()).toHtml(), connection);
+            this.print("---- responded! ----");
         }
     }
 }

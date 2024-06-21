@@ -6,7 +6,7 @@ public class Body implements HTML {
     public Body(String content) {
         this.content = content;
     }
-    public String toString() {
+    public String toHtml() {
         return """
         <!doctype html>
         <html lang="en-US">

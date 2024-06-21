@@ -16,8 +16,7 @@ public class Game implements HTML {
         Arrays.fill(data, "██");
     }
 
-    @Override
-    public String toString() {
+    public String toHtml() {
         StringBuilder ans = new StringBuilder();
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
@@ -25,6 +24,6 @@ public class Game implements HTML {
             }
             ans.append("<br>");
         }
-        return new Paragraph(ans.toString()).toString();
+        return new Paragraph(ans.toString()).toHtml();
     }
 }

@@ -16,8 +16,7 @@ public class Div implements HTML {
         this.content = content;
     }
 
-    @Override
-    public String toString() {
+   public String toHtml() {
         return "<div style=\"" +
                 "margin-top: " +    this.margin_top + ";" +
                 "margin-left: " +   this.margin_left + ";" +

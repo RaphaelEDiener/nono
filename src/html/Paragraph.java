@@ -16,9 +16,8 @@ public class Paragraph implements HTML {
         this.content = content;
     }
 
-    @Override
-    public String toString() {
-        return "<div style=\"" +
+    public String toHtml() {
+        return "<p style=\"" +
                 "margin-top: " +    this.margin_top + ";" +
                 "margin-left: " +   this.margin_left + ";" +
                 "margin-right: " +  this.margin_right + ";" +
@@ -29,6 +28,6 @@ public class Paragraph implements HTML {
                 "padding-bottom: " + this.padding_bottom + ";" +
                 "\">" +
                 this.content +
-                "</div>";
+                "</p>";
     }
 }
