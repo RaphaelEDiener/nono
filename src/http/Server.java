@@ -1,14 +1,12 @@
-package src;
+package src.http;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
 import java.util.*;
-import src.html.*;
-import src.http.*;
 
-public class Server
-{
+public class Server {
+
     private final ServerSocket socket;
     public final int port;
     public final boolean debug;
@@ -19,6 +17,7 @@ public class Server
         this.port = port;
         this.debug = false;
     }
+
     public Server()
     {
         int temp_port = 8000;
@@ -37,12 +36,14 @@ public class Server
         this.port = temp_port;
         this.debug = false;
     }
+
     public Server(int port, boolean debug) throws IOException
     {
         this.socket = new ServerSocket(port);
         this.port = port;
         this.debug = debug;
     }
+
     public Server(boolean debug)
     {
         int temp_port = 8000;
@@ -61,7 +62,9 @@ public class Server
         this.port = temp_port;
         this.debug = debug;
     }
-    private Socket connect() {
+
+    public Socket connect() {
+        this.print("---- accepting... ----");
         Socket connection = null;
         while (connection == null) {
             try {
@@ -70,9 +73,13 @@ public class Server
             catch (IOException ignored) {
             }
         }
+        this.print("---- connected! ----");
         return connection;
     }
-    // TODO: return error if failed
+
+    /**
+     * This is a debug function - do not use!
+     */
     private void respond(String message, Socket connection) {
         try (var stream = connection.getOutputStream()) {
             var response = new Response(
@@ -82,40 +89,49 @@ public class Server
                     message,
                     StandardCharsets.UTF_8
             );
-            if (this.debug) System.out.println(response);
+            if (this.debug) {
+                this.print(response.toString());
+            }
             stream.write(response.getBytes());
-        } catch (IOException ignore) {
+        }
+        catch (IOException ignore) {
         }
     }
 
-    private Optional<Request> receive(Socket connection) {
+    public Optional<Request> receive(Socket connection) {
+        this.print("---- receiving... ----");
         try {
             var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             var line = reader.readLine();
-            if (this.debug) System.out.println(line);
-            return Optional.of(Request.from_raw(line));
+            if (this.debug) {
+                this.print(line);
+            }
+            this.print("---- received! ----");
+            return Request.from_raw(line);
         }
         catch (IOException ignored) {
+            this.print("---- Failed! ----");
             return Optional.empty();
+        }
+    }
+
+    public void send(Response response, Socket connection) {
+        this.print("---- sending... ----");
+        try (var stream = connection.getOutputStream()) {
+            if (this.debug) {
+                this.print(response.toString());
+            }
+            stream.write(response.getBytes());
+            this.print("---- send! ----");
+        }
+        catch (IOException ignore) {
+            this.print("---- Failed! ----");
         }
     }
 
     private void print(String message) {
         if (this.debug) {
             System.out.println(message);
-        }
-    }
-    public void start(Game game) {
-        while (true) {
-            this.print("---- accepting... ----");
-            Socket connection = this.connect();
-            this.print("---- connected! ----");
-            this.print("---- receiving... ----");
-            var request = this.receive(connection);
-            this.print("---- received! ----");
-            this.print("---- responding... ----");
-            this.respond(new Body(game.toHtml()).toHtml(), connection);
-            this.print("---- responded! ----");
         }
     }
 }
