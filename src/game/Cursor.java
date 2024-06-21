@@ -9,6 +9,11 @@ public record Cursor(
 {
     @Override
     public String toHtml() {
+        return this.innerHtml();
+    }
+
+    @Override
+    public String innerHtml() {
         return "██";
     }
 }

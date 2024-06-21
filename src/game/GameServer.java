@@ -26,9 +26,6 @@ public class GameServer {
         this.debug = debug;
     }
 
-    private void sm() {
-    }
-
     public void start() {
         while (true) {
             Socket connection = this.server.connect();
@@ -37,12 +34,24 @@ public class GameServer {
             if (this.debug) this.print(request.toString());
             var cmd = GameCommands.from_request(request);
             if (this.debug) this.print(cmd.toString());
-            if (cmd.isPresent() && cmd.get() == GameCommands.GET_VIEW) {
+            if (cmd.isEmpty()) continue;
+
+            if (cmd.get() == GameCommands.GET_VIEW) {
                 var response = new Response(
                         Protocol.HTTP1_1,
                         StatusCode.OK,
                         ContextType.TEXT_HTML,
                         new Body(game.toHtml()).toHtml(),
+                        StandardCharsets.UTF_8
+                );
+                this.server.send(response, connection);
+            }
+            if (cmd.get() == GameCommands.DOWN) {
+                var response = new Response(
+                        Protocol.HTTP1_1,
+                        StatusCode.OK,
+                        ContextType.TEXT_HTML,
+                        game.innerHtml(),
                         StandardCharsets.UTF_8
                 );
                 this.server.send(response, connection);

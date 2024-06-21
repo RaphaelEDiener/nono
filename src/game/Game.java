@@ -21,7 +21,8 @@ public class Game implements HTML {
     private static void up() {
     }
 
-    public String toHtml() {
+
+    public String innerHtml() {
         StringBuilder ans = new StringBuilder();
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
@@ -33,6 +34,14 @@ public class Game implements HTML {
             }
             ans.append("<br>");
         }
-        return new Paragraph(ans.toString()).toHtml();
+        return ans.toString();
+    }
+
+    public String toHtml() {
+        var inner = this.innerHtml();
+        var htmx = new HTMX();
+        htmx.post("/down");
+        htmx.addTrigger(HTMXTrigger.KeyDown);
+        return new Paragraph(inner, htmx).toHtml();
     }
 }

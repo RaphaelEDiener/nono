@@ -11,9 +11,16 @@ public class Paragraph implements HTML {
     private int padding_left;
     private int padding_right;
     private int padding_bottom;
+    public final HTMX htmx;
 
     public Paragraph(String content) {
         this.content = content;
+        this.htmx = new HTMX();
+    }
+
+    public Paragraph(String content, HTMX htmx) {
+        this.content = content;
+        this.htmx = htmx;
     }
 
     public String toHtml() {
@@ -25,9 +32,15 @@ public class Paragraph implements HTML {
                 "padding-top: " +    this.padding_top + ";" +
                 "padding-left: " +   this.padding_left + ";" +
                 "padding-right: " +  this.padding_right + ";" +
-                "padding-bottom: " + this.padding_bottom + ";" +
-                "\">" +
+                "padding-bottom: " + this.padding_bottom + ";\" " +
+                this.htmx.toHtml() +
+                ">" +
                 this.content +
                 "</p>";
+    }
+
+    @Override
+    public String innerHtml() {
+        return this.content;
     }
 }

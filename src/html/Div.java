@@ -30,4 +30,9 @@ public class Div implements HTML {
                 this.content +
                 "</div>";
     }
+
+    @Override
+    public String innerHtml() {
+        return this.content;
+    }
 }
