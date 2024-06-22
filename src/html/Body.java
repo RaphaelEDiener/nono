@@ -15,6 +15,7 @@ public class Body implements HTML {
                 <head>
                   <meta charset="UTF-8" />
                   <meta name="viewport" content="width=device-width" />
+                  <link rel="icon" type="image/svg" href="/favicon.svg">
                   <title>Nonogram</title>
                 </head>
                 <script src="https://unpkg.com/htmx.org@2.0.0"></script>

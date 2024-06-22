@@ -41,29 +41,29 @@ public class GameServer {
                 this.print(cmd.toString());
             }
             if (cmd.isEmpty()) {
-                continue;
+                this.server.respond(request, connection);
+            } else {
+                this.game = switch (cmd.get()) {
+                    case UP -> this.game.up();
+                    case DOWN -> this.game.down();
+                    case LEFT -> this.game.left();
+                    case RIGHT -> this.game.right();
+                    default -> this.game;
+                };
+                var response_body = switch (cmd.get()) {
+                    case UP, DOWN, RIGHT, LEFT -> game.innerHtml();
+                    case BACK, CONFIRM, MARK -> "";
+                    case GET_VIEW -> new Body(game.toHtml()).toHtml();
+                };
+                var response = new Response(
+                        Protocol.HTTP1_1,
+                        StatusCode.OK,
+                        ContextType.TEXT_HTML,
+                        response_body,
+                        StandardCharsets.UTF_8
+                );
+                this.server.send(response, connection);
             }
-
-            this.game = switch (cmd.get()) {
-                case UP -> this.game.up();
-                case DOWN -> this.game.down();
-                case LEFT -> this.game.left();
-                case RIGHT -> this.game.right();
-                default -> this.game;
-            };
-            var response_body = switch (cmd.get()) {
-                case UP, DOWN, RIGHT, LEFT -> game.innerHtml();
-                case BACK, CONFIRM, MARK -> "";
-                case GET_VIEW -> new Body(game.toHtml()).toHtml();
-            };
-            var response = new Response(
-                    Protocol.HTTP1_1,
-                    StatusCode.OK,
-                    ContextType.TEXT_HTML,
-                    response_body,
-                    StandardCharsets.UTF_8
-            );
-            this.server.send(response, connection);
         }
     }
 

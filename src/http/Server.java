@@ -10,12 +10,80 @@ public class Server {
     private final ServerSocket socket;
     public final int port;
     public final boolean debug;
+    private final Response not_found_response;
+    private final Response htaccess;
+    private final Response favicon;
+    private static final Response default_not_found_response = new Response(
+            Protocol.HTTP1_1,
+            StatusCode.NOT_FOUND,
+            ContextType.TEXT_HTML,
+            "<h1> 404 - Page not found </h1>",
+            StandardCharsets.UTF_8
+    );
+    private static final Response default_htaccess = new Response(
+            Protocol.HTTP1_1,
+            StatusCode.OK,
+            ContextType.TEXT_PLAIN,
+            "ErrorDocument 404 /not-found-page",
+            StandardCharsets.UTF_8
+    );
+    private static final Response default_favicon = new Response(
+            Protocol.HTTP1_1,
+            StatusCode.OK,
+            ContextType.IMAGE_SVG,
+            """
+                    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                    <svg
+                       width="48"
+                       height="48"
+                       viewBox="0 0 12.7 12.7"
+                       version="1.1"
+                       id="svg1"
+                       sodipodi:docname="icon.svg"
+                       xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+                       xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+                       xmlns="http://www.w3.org/2000/svg"
+                       xmlns:svg="http://www.w3.org/2000/svg">
+                      <sodipodi:namedview
+                         id="namedview1"
+                         pagecolor="#ffffff"
+                         bordercolor="#666666"
+                         borderopacity="1.0" />
+                      <defs
+                         id="defs1" />
+                      <g
+                         id="layer1">
+                        <path
+                           d="M 9.525,0 V 3.175 6.35 H 6.35 V 9.525 12.7 H 9.525 12.7 V 9.525 6.35 3.175 0 Z"
+                           style="fill:#161616;stroke-width:0.84137;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill"
+                           id="path3" />
+                        <path
+                           d="M 0,0 V 3.175 6.35 9.525 12.7 H 3.175 V 9.525 6.35 H 6.35 V 3.175 0 H 3.175 Z"
+                           style="fill:#161616;stroke-width:0.84137;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill"
+                           id="path4" />
+                      </g>
+                    </svg>
+                    """,
+            StandardCharsets.UTF_8
+    );
+
+    public Server(Server old) {
+        this.socket = old.socket;
+        this.port = old.port;
+        this.debug = old.debug;
+        this.not_found_response = old.not_found_response;
+        this.htaccess = old.htaccess;
+        this.favicon = old.favicon;
+    }
 
     public Server(int port) throws IOException
     {
         this.socket = new ServerSocket(port);
         this.port = port;
         this.debug = false;
+        this.not_found_response = Server.default_not_found_response;
+        this.favicon = Server.default_favicon;
+        this.htaccess = Server.default_htaccess;
     }
 
     public Server()
@@ -35,6 +103,9 @@ public class Server {
         this.socket = temp_socket;
         this.port = temp_port;
         this.debug = false;
+        this.not_found_response = Server.default_not_found_response;
+        this.favicon = Server.default_favicon;
+        this.htaccess = Server.default_htaccess;
     }
 
     public Server(int port, boolean debug) throws IOException
@@ -42,6 +113,9 @@ public class Server {
         this.socket = new ServerSocket(port);
         this.port = port;
         this.debug = debug;
+        this.not_found_response = Server.default_not_found_response;
+        this.favicon = Server.default_favicon;
+        this.htaccess = Server.default_htaccess;
     }
 
     public Server(boolean debug)
@@ -61,6 +135,9 @@ public class Server {
         this.socket = temp_socket;
         this.port = temp_port;
         this.debug = debug;
+        this.not_found_response = Server.default_not_found_response;
+        this.favicon = Server.default_favicon;
+        this.htaccess = Server.default_htaccess;
     }
 
     public Socket connect() {
@@ -77,25 +154,31 @@ public class Server {
         return connection;
     }
 
-    /**
-     * This is a debug function - do not use!
-     */
-    private void respond(String message, Socket connection) {
-        try (var stream = connection.getOutputStream()) {
-            var response = new Response(
-                    Protocol.HTTP1_1,
-                    StatusCode.OK,
-                    ContextType.TEXT_HTML,
-                    message,
-                    StandardCharsets.UTF_8
-            );
-            if (this.debug) {
-                this.print(response.toString());
-            }
-            stream.write(response.getBytes());
+    public void respond(Optional<Request> req, Socket connection) {
+        if (req.isEmpty()) {
+            this.send(this.not_found_response, connection);
         }
-        catch (IOException ignore) {
+        else {
+            this.respond(req.get(), connection);
         }
+    }
+
+    public void respond(Request req, Socket connection) {
+        this.print("---- responding... ----");
+        var type = RequestType.from_request(req);
+        // java can't pattern match over more than absolute trivial things...
+        if (type.isEmpty()) {
+            this.send(this.not_found_response, connection);
+        }
+        else {
+            var response = switch (type.get()) {
+                case NOT_FOUND_PAGE -> this.not_found_response;
+                case FAVICON -> this.favicon;
+                case HTACCESS -> this.htaccess;
+            };
+            this.send(response, connection);
+        }
+        this.print("---- responded! ----");
     }
 
     public Optional<Request> receive(Socket connection) {
