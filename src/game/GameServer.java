@@ -48,11 +48,13 @@ public class GameServer {
                     case DOWN -> this.game.down();
                     case LEFT -> this.game.left();
                     case RIGHT -> this.game.right();
+                    case MARK -> this.game.mark();
+                    case CONFIRM -> this.game.confirm();
                     default -> this.game;
                 };
                 var response_body = switch (cmd.get()) {
-                    case UP, DOWN, RIGHT, LEFT -> game.innerHtml();
-                    case BACK, CONFIRM, MARK -> "";
+                    case CONFIRM, MARK, UP, DOWN, RIGHT, LEFT -> game.innerHtml();
+                    case BACK -> "";
                     case GET_VIEW -> new Body(game.toHtml()).toHtml();
                 };
                 var response = new Response(

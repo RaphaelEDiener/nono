@@ -12,6 +12,7 @@ public class Paragraph implements HTML {
     private int padding_left  = 0;
     private int padding_right = 0;
     private int padding_bottom= 0;
+    private Border border = new Border(0);
     private String id = "";
 
     public Paragraph(String content) {
@@ -35,6 +36,7 @@ public class Paragraph implements HTML {
         this.padding_right = old.padding_right ;
         this.padding_bottom= old.padding_bottom;
         this.id            = old.id            ;
+        this.border        = old.border        ;
     }
 
     public Paragraph id(String id){
@@ -42,10 +44,17 @@ public class Paragraph implements HTML {
         n.id = id;
         return n;
     }
+    public Paragraph border(Border border){
+        var n = new Paragraph(this);
+        n.border = border;
+        return n;
+    }
 
     public String toHtml() {
         var id = this.id.isEmpty() ? "" : "id=\"" + this.id + "\" ";
         return "<p style=\"" +
+                "width: max-content; " +
+                this.border.toHtml() +
                 "margin-top: " + this.margin_top + ";" +
                 "margin-left: " + this.margin_left + ";" +
                 "margin-right: " + this.margin_right + ";" +

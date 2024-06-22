@@ -5,6 +5,8 @@ public enum HTMXTrigger{
     KeyLeft ("keydown[key=='ArrowLeft']"),
     KeyRight("keydown[key=='ArrowRight']"),
     KeyUp("keydown[key=='ArrowUp']"),
+    KeyEnter("keydown[key=='Enter']"),
+    KeySpace("keydown[key==' ']"),
     Click("click");
 
     private final String desc;
