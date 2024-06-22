@@ -4,10 +4,11 @@
 
 The goal is a generator and solver for so-called nonograms.
 
-The numbers in each row or column describe the length of contiguous black areas in the respective row or column.
-black areas in the respective row or column.
+The numbers in each row or column describe the length of contiguous black areas 
+in the respective row or column.
+Black areas in the respective row or column.
 
-A programme is to be created with which you can generate nonograms yourself by
+A program is to be created with which you can generate nonograms yourself by
 clicking on the respective pixels. 
 Furthermore, it should be possible to obtain the numbers
 for a nonogram and to try to find the solution yourself. 
@@ -24,12 +25,12 @@ The final submission should...
 - > 90% test coverage at all times
 - Everything has to be documented in code
 - No trowing of exceptions! Only returning!
-- No sideeffects are allowed expect when handling IO.
-- IO should be contained in a single file and not polute throughout the project!
+- No side-effects are allowed, expect when handling IO.
+- IO should be contained in a single file and not pollute throughout the project!
 - Every `if` has an `else`.
   - Guard clauses are the exception to this rule
 - No method should be called on any class. Only on interfaces.
-- No `get`'ters or `set`'terters
+- No `get`'ters or `set`'ters
 - The documentation lives in `/docs`
 - The code lives in `/src`
 - The tests live in `/tests`
