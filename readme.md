@@ -1,5 +1,7 @@
 # Nonogram in Java
 
+add: anyfair
+
 ## Project Description
 
 The goal is a generator and solver for so-called nonograms.

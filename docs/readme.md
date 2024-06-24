@@ -30,6 +30,7 @@ Afterwards you will find the `.jar` file inside the projects root directory.
 - [Ansi codes](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797)
 - [Unicode list Wikipedia](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
 - [HTTP Specification](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [htmx docs]()
 
 ### Design
 
