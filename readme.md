@@ -1,6 +1,7 @@
 # Nonogram in Java
 
 add: anyfair
+set monospace font on the webpage else layout
 
 ## Project Description
 
