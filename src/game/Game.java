@@ -10,6 +10,8 @@ public class Game implements HTML {
     public final int height;
     private final Cell[] data;
     private final Cursor cursor;
+    public final String name;
+    public final int click;
     private static final HTMX up_htmx =
             new HTMX().addTrigger(HTMXTrigger.KeyUp).post("/up").target_id("board");
     private static final HTMX left_htmx =
@@ -22,9 +24,14 @@ public class Game implements HTML {
             new HTMX().addTrigger(HTMXTrigger.KeySpace).post("/mark").target_id("board");
     private static final HTMX confirm_htmx =
             new HTMX().addTrigger(HTMXTrigger.KeyEnter).post("/confirm").target_id("board");
+    private static final HTMX play_htmx =
+            new HTMX().addTrigger(HTMXTrigger.Click).post("/play").target_id("board");
+    private static final HTMX create_htmx =
+            new HTMX().addTrigger(HTMXTrigger.Click).post("/create").target_id("board");
 
-    public Game(int width, int height) {
-        this.width = width;
+    public Game(int width, int height, String name) {
+        this.name = name;
+    	this.width = width;
         this.height = height;
         this.data = new Cell[width * height];
         Arrays.fill(data, Cell.EMPTY);
@@ -85,7 +92,62 @@ public class Game implements HTML {
         var old_cell = this.data[this.cursor.x() + this.cursor.y() * this.width];
         var new_cell = old_cell == Cell.FILLED ? Cell.EMPTY : Cell.FILLED;
         return new Game(this, new_cell, this.cursor.x(), this.cursor.y());
+        //save for create project?
     }
+    
+    public Game create() {
+    	//name
+    	//size
+    	return new Game(width,height,name);
+    }
+    public Game check(data1,data2) {
+    	var current = Arrays.copyOf(data1.data, data1.width * data1.height);
+    	var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
+    	
+    	boolean lineCorrect = true;
+    	boolean rowCorrect = true;
+    	boolean cellCorrect = true;
+    	
+    	int filledC = 0;
+    	int filledS = 0;
+    	int cellNumber = 0;
+    	
+    	//
+    	for(int y = 0; y < data1.width; y++) {
+    		for(int x = 0; x < data1.height; x++) {
+    			if(data1.cell[cellNumber] == Cell.FILLED ) {
+    				filledC ++;
+    			}
+    			if(data2.cell[cellNumber] == Cell.FILLED) {
+    				filledS ++;
+    			}
+    			if(data1.cell[cellNumber] != data2.cell[cellNumber]) {
+    				cellCorrect = false;
+    			}
+    			cellNumber++;
+    		}
+    		if(filledC != filledS && cellCorrect == false) {
+    			return LineError(y+1);
+    		}
+    	})
+    	
+    	
+    	
+    	 
+    	
+    	
+    }
+    
+    public Game play() {
+    //click building if confirm them click ++ ?
+    //1 Time Stemp
+    
+    	
+    	
+    	
+    }
+    
+    
 
     public String innerHtml() {
         var arr = Arrays.copyOf(this.data, this.width * this.height);
