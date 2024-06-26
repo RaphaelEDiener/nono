@@ -30,6 +30,7 @@ Afterwards you will find the `.jar` file inside the projects root directory.
 - [Ansi codes](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797)
 - [Unicode list Wikipedia](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
 - [HTTP Specification](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [htmx docs]()
 
 ### Design
 
@@ -116,4 +117,17 @@ But before logic, I've wanted to make the little server "complete".
 Currently it just spins out when getting a request it can't handle.
 So I've introduced some defaults for the Server class which now can
 handle favicon and 404 requests.
+
+#### Game Design
+
+We've decided on the following game states:
+
+- Main menu
+- Solving
+- Creating
+
+
+
+
+
 

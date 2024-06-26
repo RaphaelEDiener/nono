@@ -3,20 +3,21 @@ package src.html;
 
 import java.util.*;
 
-public class HTMX implements HTML {
+public class HTMX {
 
     private final List<HTMXTrigger> triggers;
-    private String post_url;
-    private String target_id;
+    private final String post_url;
+    private final String target_id;
 
     public HTMX() {
         this.triggers = new ArrayList<>();
         this.post_url = "";
         this.target_id = "";
     }
-    public HTMX(List<HTMXTrigger> triggers, String post) {
+    public HTMX(List<HTMXTrigger> triggers, String post, String targetId) {
         this.triggers = triggers;
         this.post_url = post;
+        this.target_id = targetId;
     }
     public HTMX(HTMX old) {
         this.triggers  = old.triggers ;
@@ -27,20 +28,17 @@ public class HTMX implements HTML {
     public HTMX addTrigger(HTMXTrigger trigger) {
         var new_list = new ArrayList<HTMXTrigger>(this.triggers);
         new_list.add(trigger);
-        return new HTMX(new_list, this.post_url);
+        return new HTMX(new_list, this.post_url, this.target_id);
     }
 
     public HTMX post(String url) {
-        return new HTMX(this.triggers, url);
+        return new HTMX(this.triggers, url, this.target_id);
     }
 
     public HTMX target_id(String id) {
-        var ans = new HTMX(this);
-        ans.target_id = id;
-        return ans;
+        return new HTMX(this.triggers, this.post_url, id);
     }
 
-    @Override
     public String toHtml() {
         var ans = new StringBuilder();
         if (!this.triggers.isEmpty()){
@@ -64,7 +62,6 @@ public class HTMX implements HTML {
         return ans.toString();
     }
 
-    @Override
     public String innerHtml() {
         return this.toHtml();
     }

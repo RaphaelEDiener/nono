@@ -170,11 +170,16 @@ public class Server {
         if (type.isEmpty()) {
             this.send(this.not_found_response, connection);
         }
+        else if (type.get() == RequestType.SHUT_DOWN) {
+            System.exit(0);
+        }
         else {
             var response = switch (type.get()) {
                 case NOT_FOUND_PAGE -> this.not_found_response;
                 case FAVICON -> this.favicon;
                 case HTACCESS -> this.htaccess;
+                case SHUT_DOWN -> throw new RuntimeException(
+                        "Unreachable! Server is trying to respond after shutting down");
             };
             this.send(response, connection);
         }

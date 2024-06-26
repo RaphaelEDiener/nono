@@ -1,6 +1,8 @@
 package src.html;
 
-public interface HTML {
+public sealed interface HTML
+        permits Body, Div, Head, Paragraph
+{
     String toHtml();
     String innerHtml();
 }

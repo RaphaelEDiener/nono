@@ -1,5 +1,8 @@
 # Nonogram in Java
 
+add: anyfair
+set monospace font on the webpage else layout
+
 ## Project Description
 
 The goal is a generator and solver for so-called nonograms.
@@ -22,14 +25,19 @@ The final submission should...
 ## Project Guidelines
 
 - Project language is english.
-- > 90% test coverage at all times
+- \> 90% test coverage at all times
 - Everything has to be documented in code
 - No trowing of exceptions! Only returning!
-- No side-effects are allowed, expect when handling IO.
+- Everything should be final by default. 
+  Only opt into mutability if you see a performance win, and it can be made privately.
+- No use of records. 
+  Records are a poor abstraction that breaks fast and leads to more effort later
+- Every access of an object property must be prefixed by `this.`
+- No side effects are allowed, expect when handling IO.
 - IO should be contained in a single file and not pollute throughout the project!
 - Every `if` has an `else`.
   - Guard clauses are the exception to this rule
-- No method should be called on any class. Only on interfaces.
+- No method should be called on any class holding state. Only on interfaces.
 - No `get`'ters or `set`'ters
 - The documentation lives in `/docs`
 - The code lives in `/src`

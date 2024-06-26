@@ -5,7 +5,8 @@ import java.util.*;
 public enum RequestType {
     NOT_FOUND_PAGE,
     FAVICON,
-    HTACCESS;
+    HTACCESS,
+    SHUT_DOWN;
 
     public static Optional<RequestType> from_request(Request req) {
         return switch (req.url()) {
