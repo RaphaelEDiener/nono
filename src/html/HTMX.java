@@ -40,7 +40,6 @@ public class HTMX implements HTML {
         return ans;
     }
 
-    @Override
     public String toHtml() {
         var ans = new StringBuilder();
         if (!this.triggers.isEmpty()){
@@ -64,7 +63,6 @@ public class HTMX implements HTML {
         return ans.toString();
     }
 
-    @Override
     public String innerHtml() {
         return this.toHtml();
     }

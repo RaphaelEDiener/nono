@@ -118,3 +118,16 @@ Currently it just spins out when getting a request it can't handle.
 So I've introduced some defaults for the Server class which now can
 handle favicon and 404 requests.
 
+#### Game Design
+
+We've decided on the following game states:
+
+- Main menu
+- Solving
+- Creating
+
+
+
+
+
+

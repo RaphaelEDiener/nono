@@ -1,12 +1,11 @@
 package src.html;
 
-public enum  {
+public enum WithUnits {
     EM,
     REM,
     PERCENT,
     PX;
 
-    @Override
     public String toString() {
         return switch (this) {
             case EM -> "em";
