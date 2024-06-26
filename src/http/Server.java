@@ -32,38 +32,38 @@ public class Server {
             StatusCode.OK,
             ContextType.IMAGE_SVG,
             """
-                    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-                    <svg
-                       width="48"
-                       height="48"
-                       viewBox="0 0 12.7 12.7"
-                       version="1.1"
-                       id="svg1"
-                       sodipodi:docname="icon.svg"
-                       xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-                       xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-                       xmlns="http://www.w3.org/2000/svg"
-                       xmlns:svg="http://www.w3.org/2000/svg">
-                      <sodipodi:namedview
-                         id="namedview1"
-                         pagecolor="#ffffff"
-                         bordercolor="#666666"
-                         borderopacity="1.0" />
-                      <defs
-                         id="defs1" />
-                      <g
-                         id="layer1">
-                        <path
-                           d="M 9.525,0 V 3.175 6.35 H 6.35 V 9.525 12.7 H 9.525 12.7 V 9.525 6.35 3.175 0 Z"
-                           style="fill:#161616;stroke-width:0.84137;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill"
-                           id="path3" />
-                        <path
-                           d="M 0,0 V 3.175 6.35 9.525 12.7 H 3.175 V 9.525 6.35 H 6.35 V 3.175 0 H 3.175 Z"
-                           style="fill:#161616;stroke-width:0.84137;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill"
-                           id="path4" />
-                      </g>
-                    </svg>
-                    """,
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+width="48"
+height="48"
+viewBox="0 0 12.7 12.7"
+version="1.1"
+id="svg1"
+sodipodi:docname="icon.svg"
+xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:svg="http://www.w3.org/2000/svg">
+<sodipodi:namedview
+id="namedview1"
+pagecolor="#ffffff"
+bordercolor="#666666"
+borderopacity="1.0" />
+<defs
+id="defs1" />
+<g
+id="layer1">
+<path
+d="M 9.525,0 V 3.175 6.35 H 6.35 V 9.525 12.7 H 9.525 12.7 V 9.525 6.35 3.175 0 Z"
+style="fill:#161616;stroke-width:0.84137;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill"
+id="path3" />
+<path
+d="M 0,0 V 3.175 6.35 9.525 12.7 H 3.175 V 9.525 6.35 H 6.35 V 3.175 0 H 3.175 Z"
+style="fill:#161616;stroke-width:0.84137;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill"
+id="path4" />
+</g>
+</svg>
+""",
             StandardCharsets.UTF_8
     );
 

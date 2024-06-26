@@ -31,7 +31,7 @@ public class Game {
 
     public Game(int width, int height, String name) {
         this.name = name;
-    	this.width = width;
+        this.width = width;
         this.height = height;
         this.data = new Cell[width * height];
         Arrays.fill(data, Cell.EMPTY);
@@ -94,60 +94,52 @@ public class Game {
         return new Game(this, new_cell, this.cursor.x(), this.cursor.y());
         //save for create project?
     }
-    
+
     public Game create() {
-    	//name
-    	//size
-    	return new Game(width,height,name);
+        //name
+        //size
+        return new Game(width, height, name);
     }
-    public Game check(data1,data2) {
-    	var current = Arrays.copyOf(data1.data, data1.width * data1.height);
-    	var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
-    	
-    	boolean lineCorrect = true;
-    	boolean rowCorrect = true;
-    	boolean cellCorrect = true;
-    	
-    	int filledC = 0;
-    	int filledS = 0;
-    	int cellNumber = 0;
-    	
-    	//
-    	for(int y = 0; y < data1.width; y++) {
-    		for(int x = 0; x < data1.height; x++) {
-    			if(data1.cell[cellNumber] == Cell.FILLED ) {
-    				filledC ++;
-    			}
-    			if(data2.cell[cellNumber] == Cell.FILLED) {
-    				filledS ++;
-    			}
-    			if(data1.cell[cellNumber] != data2.cell[cellNumber]) {
-    				cellCorrect = false;
-    			}
-    			cellNumber++;
-    		}
-    		if(filledC != filledS && cellCorrect == false) {
-    			return LineError(y+1);
-    		}
-    	})
-    	
-    	
-    	
-    	 
-    	
-    	
+
+    public Game check(data1, data2) {
+        var current = Arrays.copyOf(data1.data, data1.width * data1.height);
+        var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
+
+        boolean lineCorrect = true;
+        boolean rowCorrect = true;
+        boolean cellCorrect = true;
+
+        int filledC = 0;
+        int filledS = 0;
+        int cellNumber = 0;
+
+        //
+        for (int y = 0; y < data1.width; y++) {
+            for (int x = 0; x < data1.height; x++) {
+                if (data1.cell[cellNumber] == Cell.FILLED) {
+                    filledC++;
+                }
+                if (data2.cell[cellNumber] == Cell.FILLED) {
+                    filledS++;
+                }
+                if (data1.cell[cellNumber] != data2.cell[cellNumber]) {
+                    cellCorrect = false;
+                }
+                cellNumber++;
+            }
+            if (filledC != filledS && cellCorrect == false) {
+                return LineError(y + 1);
+            }
+        })
+
     }
-    
+
     public Game play() {
-    //click building if confirm them click ++ ?
-    //1 Time Stemp
-    
-    	
-    	
-    	
+        //click building if confirm them click ++ ?
+        //1 Time Stemp
+
     }
-    
-    
+
 
     public String innerHtml() {
         var arr = Arrays.copyOf(this.data, this.width * this.height);
@@ -163,11 +155,11 @@ public class Game {
     }
 
     public String toHtml() {
-        var up_div =      new Div("").htmx(Game.up_htmx);
-        var left_div =    new Div("").htmx(Game.left_htmx);
-        var right_div =   new Div("").htmx(Game.right_htmx);
-        var down_div =    new Div("").htmx(Game.down_htmx);
-        var mark_div =    new Div("").htmx(Game.mark_htmx);
+        var up_div = new Div("").htmx(Game.up_htmx);
+        var left_div = new Div("").htmx(Game.left_htmx);
+        var right_div = new Div("").htmx(Game.right_htmx);
+        var down_div = new Div("").htmx(Game.down_htmx);
+        var mark_div = new Div("").htmx(Game.mark_htmx);
         var confirm_div = new Div("").htmx(Game.confirm_htmx);
         var paragraph = new Paragraph(this.innerHtml())
                 .id("board")
