@@ -1,6 +1,6 @@
 package src.html;
 
-public class Div implements HTML {
+public final class Div implements HTML {
 
     public final String content;
     public final HTMX htmx;
@@ -41,12 +41,12 @@ public class Div implements HTML {
         final Border border,
         final String id
     ) {
-        this.content = old.content;
-        this.htmx    = old.htmx   ;
+        this.content = content;
+        this.htmx    = htmx   ;
         this.margin  = margin ;
-        this.padding = old.padding;
-        this.id      = old.id     ;
-        this.border  = old.border ;
+        this.padding = padding;
+        this.id      = id     ;
+        this.border  = border ;
     }
 
     public Div id(String id) {

@@ -1,6 +1,6 @@
 package src.html;
 
-public class Margin
+public final class Margin
 implements Style {
     public final int top   ;
     public final int left  ;
@@ -45,6 +45,6 @@ implements Style {
         return "margin: " + this.top + this.unit + " "
         + this.left + this.unit + " "
         + this.right + this.unit + " "
-        + this.bottom + this.unit + "; "
+        + this.bottom + this.unit + "; ";
     }
 }    

@@ -1,6 +1,6 @@
 package src.html;
 
-public class Favicon implements HTML{
+public final class Favicon implements Meta {
 
     public final ImageType type;
     public final String url;
@@ -14,10 +14,7 @@ public class Favicon implements HTML{
         return "<link rel=\"icon\" type=\""
         + this.type.toString() 
         + "\" href=\""
-        + this.url.toString() + 
+        + this.url +
         "\">";
-    }
-    public String innerHtml() {
-        return "";
     }
 }

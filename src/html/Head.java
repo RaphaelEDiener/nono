@@ -1,6 +1,6 @@
 package src.html;
 
-public class Head implements HTML {
+public final class Head implements HTML {
 
     public final String title;
     public final ContentWidthUnits width;
@@ -25,8 +25,7 @@ public class Head implements HTML {
     public String innerHtml(){
         return "<meta charset=\"UTF-8\" />"
         + "<meta name=\"viewport\" content=\"width=" + width.toString() + "\" />"
-        + favicon.toString()
+        + favicon.toHtml()
         + "<title>" + title + "</title>";
     }
-
 }

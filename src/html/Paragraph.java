@@ -1,6 +1,6 @@
 package src.html;
 
-public class Paragraph implements HTML {
+public final class Paragraph implements HTML {
     public final String content;
     public final HTMX htmx;
     public final Margin margin;
@@ -40,12 +40,12 @@ public class Paragraph implements HTML {
         final Border border,
         final String id
     ) {
-        this.content = old.content;
-        this.htmx    = old.htmx   ;
+        this.content = content;
+        this.htmx    = htmx   ;
         this.margin  = margin ;
-        this.padding = old.padding;
-        this.id      = old.id     ;
-        this.border  = old.border ;
+        this.padding = padding;
+        this.id      = id     ;
+        this.border  = border ;
     }
 
     public Paragraph id(String id) {
@@ -82,7 +82,7 @@ public class Paragraph implements HTML {
     public String toHtml() {
         var id = this.id.isEmpty() ? "" : "id=\"" + this.id + "\" ";
         return "<p style=\"" +
-        "width: max-content; " +  // TODO: figur out something smart for this...
+        "width: max-content; " +  // TODO: figure out something smart for this...
         this.border.toStyle() +
         this.margin.toStyle() +
         this.padding.toStyle() +

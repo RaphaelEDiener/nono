@@ -1,6 +1,6 @@
 package src.html;
 
-public enum WithUnits {
+public enum WidthUnits {
     EM,
     REM,
     PERCENT,

@@ -1,13 +1,13 @@
 package src.html;
 
-public class Border 
+public final class Border
 implements Style {
     public final int width; 
     public final WidthUnits unit;
 
     public Border() {
         this.width = 1;
-        this.unit(WidthUnits.PX);
+        this.unit = WidthUnits.PX;
     }
     public Border(int width, WidthUnits unit) {
         this.width = width;

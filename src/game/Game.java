@@ -4,7 +4,7 @@ import static java.lang.Math.*;
 import java.util.*;
 import src.html.*;
 
-public class Game implements HTML {
+public class Game {
 
     public final int width;
     public final int height;
@@ -101,14 +101,16 @@ public class Game implements HTML {
     }
 
     public String toHtml() {
-        var up_div = new Div("", Game.up_htmx);
-        var left_div = new Div("", Game.left_htmx);
-        var right_div = new Div("", Game.right_htmx);
-        var down_div = new Div("", Game.down_htmx);
-        var mark_div = new Div("", Game.mark_htmx);
-        var confirm_div = new Div("", Game.confirm_htmx);
-        var ans = new Paragraph(this.innerHtml()).id("board").border(new Border(1));
-        return ans.toHtml() + confirm_div.toHtml() + mark_div.toHtml() + up_div.toHtml()
+        var up_div =      new Div("").htmx(Game.up_htmx);
+        var left_div =    new Div("").htmx(Game.left_htmx);
+        var right_div =   new Div("").htmx(Game.right_htmx);
+        var down_div =    new Div("").htmx(Game.down_htmx);
+        var mark_div =    new Div("").htmx(Game.mark_htmx);
+        var confirm_div = new Div("").htmx(Game.confirm_htmx);
+        var paragraph = new Paragraph(this.innerHtml())
+                .id("board")
+                .border(new Border(1, WidthUnits.EM));
+        return paragraph.toHtml() + confirm_div.toHtml() + mark_div.toHtml() + up_div.toHtml()
                 + left_div.toHtml() + right_div.toHtml()
                 + down_div.toHtml();
     }
