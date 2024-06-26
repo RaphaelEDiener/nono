@@ -15,7 +15,7 @@ public final class Div implements HTML {
         this.margin = new Margin();
         this.padding = new Padding();
         this.id = "";
-        this.border = new Border();
+        this.border = new Border(0, WidthUnits.PX);
     }
     public Div(final String content) {
         this.content = content;
@@ -23,7 +23,7 @@ public final class Div implements HTML {
         this.margin = new Margin();
         this.padding = new Padding();
         this.id = "";
-        this.border = new Border();
+        this.border = new Border(0, WidthUnits.PX);
     }
     public Div(final Div old) {
         this.content = old.content;

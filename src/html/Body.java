@@ -9,6 +9,7 @@ public final class Body implements HTML {
         this.content = content;
         this.head = head;
     }
+
     public Body(final String content) {
         this.content = content;
         this.head = new Head(

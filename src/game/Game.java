@@ -109,7 +109,8 @@ public class Game {
         var confirm_div = new Div("").htmx(Game.confirm_htmx);
         var paragraph = new Paragraph(this.innerHtml())
                 .id("board")
-                .border(new Border(1, WidthUnits.EM));
+                .border(new Border(1, WidthUnits.EM))
+                .fontFamily(FontFamily.MONOSPACE);
         return paragraph.toHtml() + confirm_div.toHtml() + mark_div.toHtml() + up_div.toHtml()
                 + left_div.toHtml() + right_div.toHtml()
                 + down_div.toHtml();

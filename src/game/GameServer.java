@@ -27,6 +27,7 @@ public class GameServer {
     }
 
     public void start() {
+        //noinspection InfiniteLoopStatement since it gets terminated!
         while (true) {
             Socket connection = this.server.connect();
             if (this.debug) {
@@ -55,7 +56,8 @@ public class GameServer {
                 var response_body = switch (cmd.get()) {
                     case CONFIRM, MARK, UP, DOWN, RIGHT, LEFT -> game.innerHtml();
                     case BACK -> "";
-                    case GET_VIEW -> new Body(game.toHtml()).toHtml();
+                    case GET_VIEW -> new Body(game.toHtml())
+                            .toHtml();
                 };
                 var response = new Response(
                         Protocol.HTTP1_1,
