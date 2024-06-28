@@ -10,4 +10,8 @@ public enum ContentWidthUnits {
             case MAX_CONTENT -> "max-content";
         };
     }
+
+    public String toStyle() {
+        return "width: " + this + "; ";
+    }
 }
