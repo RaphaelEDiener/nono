@@ -60,6 +60,11 @@ public class Game {
         this.name = old.name;
     }
 
+    public static Game fromSave(String name) {
+        var solved = new FileInputStream(this.name);
+        solved.read();
+    }
+
     public Game up() {
         return new Game(this, new Cursor(
                 clamp(this.cursor.x(), 0, this.width - 1),
@@ -107,8 +112,8 @@ public class Game {
         //save for create project?
     }
 
-    public Game check(data1, data2) {
-        var current = Arrays.copyOf(data1.data, data1.width * data1.height);
+    public Game check() {
+        var current = Arrays.copyOf(this.data, this.width * this.height);
         var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
 
         boolean lineCorrect = true;
@@ -120,15 +125,15 @@ public class Game {
         int cellNumber = 0;
         int collumsNumb = 0;
 
-        for (int y = 0; y < data1.width; y++) {
-            for (int x = 0; x < data1.height; x++) {
-                if (data1.cell[cellNumber] == Cell.FILLED) {
+        for (int y = 0; y < this.width; y++) {
+            for (int x = 0; x < this.height; x++) {
+                if (this.cell[cellNumber] == Cell.FILLED) {
                     filledC++;
                 }
                 if (data2.cell[cellNumber] == Cell.FILLED) {
                     filledS++;
                 }
-                if (data1.cell[cellNumber] != data2.cell[cellNumber]) {
+                if (this.cell[cellNumber] != data2.cell[cellNumber]) {
                     cellCorrect = false;
                 }
                 cellNumber++;
@@ -137,26 +142,30 @@ public class Game {
                 return LineError(y + 1);
             }
         }
-        for (int y = 0; y < data1.width; y++) {
-//    		for(int x = 0; x < data1.height, x++)
-            if (data1.cell[data1])
+        for (int y = 0; y < this.width; y++) {
+//    		for(int x = 0; x < this.height, x++)
+            if (this.cell[data1])
 
         }
 
     }
 
-    public Game play() {
-        //click building if confirm them click ++ ?
-        //1 Time Stemp
-        return this;
-    }
-
     public void save() {
-        var stream = new FileOutputStream(this.name);
-        stream.write(this.width);
-        stream.write(this.height);
-        for (var cell : this.data) {
-            stream.write(cell.toVal());
+        try {
+            var stream = new FileOutputStream(this.name);
+            stream.write(this.width);
+            stream.write(this.height);
+            for (var cell : this.data) {
+                stream.write(cell.toVal());
+            }
+            stream.write(this.name.length());
+            stream.write(this.name.getBytes());
+        }
+        catch (FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

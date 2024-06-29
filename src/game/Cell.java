@@ -1,10 +1,10 @@
 package src.game;
 
 public enum Cell {
-    FILLED((byte)1),
-    EMPTY ((byte)0),
-    MARKED((byte)0),
-    CURSOR((byte)0);
+    FILLED((byte) 1),
+    EMPTY((byte) 0),
+    MARKED((byte) 0),
+    CURSOR((byte) 0);
 
     private final byte val;
 
@@ -23,16 +23,16 @@ public enum Cell {
     }
 
     public Cell fromVal(byte x) {
-    	 return switch (x) {
-         case 1 -> FILLED; 
-         case 0 -> EMPTY; 
-         default -> throw new RuntimeException("Parsed invalid byte");
-     };
-    	
+        return switch (x) {
+            case 1 -> FILLED;
+            case 0 -> EMPTY;
+            default -> throw new RuntimeException("Parsed invalid byte");
+        };
+
     }
 
     public byte toVal() {
-    	return this.val;
+        return this.val;
     }
 
 }
