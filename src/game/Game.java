@@ -2,6 +2,7 @@ package src.game;
 
 import static java.lang.Math.*;
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 import src.html.*;
 
@@ -48,6 +49,15 @@ public class Game {
         this.clicks = old.clicks;
         this.name = old.name;
     }
+    
+    public Game(int width, int height, Cell[]data, Cursor cursor, int clicks, String name) {
+        this.width = width;
+        this.height = height;
+        this.data = data;
+        this.cursor = cursor;
+        this.clicks = clicks;
+        this.name = name;
+    }
 
     public Game(Game old, Cell cell, int x, int y, int clicks) {
         this.width = old.width;
@@ -60,9 +70,22 @@ public class Game {
         this.name = old.name;
     }
 
-    public static Game fromSave(String name) {
-        var solved = new FileInputStream(this.name);
-        solved.read();
+    public static Optional<Game> fromSave(String name) {
+    	Optional<Game> ans = Optional.empty();
+        try {
+            var stream = new FileInputStream(name);
+            var width = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
+            var height = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
+            stream.write(this.height);
+            for (var cell : this.data) {
+                stream.write(cell.toVal());
+            }
+            stream.write(this.name.length());
+            stream.write(this.name.getBytes());
+        }
+        catch (Exception ignore) {
+        }
+        return ans;
     }
 
     public Game up() {
@@ -112,7 +135,7 @@ public class Game {
         //save for create project?
     }
 
-    public Game check() {
+    public Game check(Game solved) {
         var current = Arrays.copyOf(this.data, this.width * this.height);
         var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
 
@@ -150,7 +173,7 @@ public class Game {
 
     }
 
-    public void save() {
+    private void save() {
         try {
             var stream = new FileOutputStream(this.name);
             stream.write(this.width);
