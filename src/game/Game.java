@@ -2,7 +2,7 @@ package src.game;
 
 import static java.lang.Math.*;
 import java.io.*;
-import java.nio.ByteBuffer;
+import java.nio.*;
 import java.util.*;
 import src.html.*;
 
@@ -49,8 +49,8 @@ public class Game {
         this.clicks = old.clicks;
         this.name = old.name;
     }
-    
-    public Game(int width, int height, Cell[]data, Cursor cursor, int clicks, String name) {
+
+    public Game(int width, int height, Cell[] data, Cursor cursor, int clicks, String name) {
         this.width = width;
         this.height = height;
         this.data = data;
@@ -71,17 +71,17 @@ public class Game {
     }
 
     public static Optional<Game> fromSave(String name) {
-    	Optional<Game> ans = Optional.empty();
+        Optional<Game> ans = Optional.empty();
         try {
             var stream = new FileInputStream(name);
             var width = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var height = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
-            stream.write(this.height);
+            var read = stream.readNBytes(width * height);
             for (var cell : this.data) {
                 stream.write(cell.toVal());
             }
-            stream.write(this.name.length());
-            stream.write(this.name.getBytes());
+
+            ans = Optional.of(new Game(width, height, data, new Cursor(0, 0), 0, name));
         }
         catch (Exception ignore) {
         }
@@ -148,8 +148,8 @@ public class Game {
         int cellNumber = 0;
         int collumsNumb = 0;
 
-        for (int y = 0; y < this.width; y++) {
-            for (int x = 0; x < this.height; x++) {
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
                 if (this.cell[cellNumber] == Cell.FILLED) {
                     filledC++;
                 }
@@ -181,8 +181,6 @@ public class Game {
             for (var cell : this.data) {
                 stream.write(cell.toVal());
             }
-            stream.write(this.name.length());
-            stream.write(this.name.getBytes());
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException(e.getMessage());
