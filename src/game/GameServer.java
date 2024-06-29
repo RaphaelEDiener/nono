@@ -9,6 +9,7 @@ public class GameServer {
 
     private final Server server;
     private Game game;
+    private GameStates state;
     public final int port;
     public final boolean debug;
 
@@ -17,6 +18,7 @@ public class GameServer {
         this.game = game;
         this.port = this.server.port;
         this.debug = false;
+        this.state = GameStates.SELECTION;
     }
 
     public GameServer(Game game, boolean debug) {
@@ -24,6 +26,32 @@ public class GameServer {
         this.game = game;
         this.port = this.server.port;
         this.debug = debug;
+        this.state = GameStates.SELECTION;
+    }
+
+    Response handle_playing(GameCommands cmd) {
+        this.game = switch (cmd) {
+            case UP -> this.game.up();
+            case DOWN -> this.game.down();
+            case LEFT -> this.game.left();
+            case RIGHT -> this.game.right();
+            case MARK -> this.game.mark();
+            case CONFIRM -> this.game.confirm();
+            default -> this.game;
+        };
+        var response_body = switch (cmd) {
+            case CONFIRM, MARK, UP, DOWN, RIGHT, LEFT -> game.innerHtml();
+            case BACK -> "";
+            case GET_VIEW -> new Body(game.toHtml())
+                    .toHtml();
+        };
+        return new Response(
+                Protocol.HTTP1_1,
+                StatusCode.OK,
+                ContextType.TEXT_HTML,
+                response_body,
+                StandardCharsets.UTF_8
+        );
     }
 
     public void start() {
@@ -43,29 +71,11 @@ public class GameServer {
             }
             if (cmd.isEmpty()) {
                 this.server.respond(request, connection);
-            } else {
-                this.game = switch (cmd.get()) {
-                    case UP -> this.game.up();
-                    case DOWN -> this.game.down();
-                    case LEFT -> this.game.left();
-                    case RIGHT -> this.game.right();
-                    case MARK -> this.game.mark();
-                    case CONFIRM -> this.game.confirm();
-                    default -> this.game;
+            }
+            else {
+                var response = switch (this.state) {
+                    case SELECTION, PLAYING, CREATING -> handle_playing(cmd.get());
                 };
-                var response_body = switch (cmd.get()) {
-                    case CONFIRM, MARK, UP, DOWN, RIGHT, LEFT -> game.innerHtml();
-                    case BACK -> "";
-                    case GET_VIEW -> new Body(game.toHtml())
-                            .toHtml();
-                };
-                var response = new Response(
-                        Protocol.HTTP1_1,
-                        StatusCode.OK,
-                        ContextType.TEXT_HTML,
-                        response_body,
-                        StandardCharsets.UTF_8
-                );
                 this.server.send(response, connection);
             }
         }

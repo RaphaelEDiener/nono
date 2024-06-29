@@ -33,7 +33,7 @@ public class Game {
 
     public Game(int width, int height, String name) {
         this.name = name;
-    	this.width = width;
+        this.width = width;
         this.height = height;
         this.data = new Cell[width * height];
         Arrays.fill(data, Cell.EMPTY);
@@ -96,7 +96,7 @@ public class Game {
         return new Game(this, new_cell, this.cursor.x(), this.cursor.y());
         //save for create project?
     }
-    
+
     public Game create() {
     	//ask for name , width and height
     	return new Game(width,height,name);
@@ -139,23 +139,15 @@ public class Game {
     		if(data1.cell[data1])
     		
     	}
-    	 
-    	
-    	 
-    	
-    	
+
     }
-    
+
     public Game play() {
-    //click building if confirm them click ++ ?
-    //1 Time Stemp
-    
-    	
-    	
-    	
+        //click building if confirm them click ++ ?
+        //1 Time Stemp
+
     }
-    
-    
+
 
     public String innerHtml() {
         var arr = Arrays.copyOf(this.data, this.width * this.height);
@@ -171,11 +163,11 @@ public class Game {
     }
 
     public String toHtml() {
-        var up_div =      new Div("").htmx(Game.up_htmx);
-        var left_div =    new Div("").htmx(Game.left_htmx);
-        var right_div =   new Div("").htmx(Game.right_htmx);
-        var down_div =    new Div("").htmx(Game.down_htmx);
-        var mark_div =    new Div("").htmx(Game.mark_htmx);
+        var up_div = new Div("").htmx(Game.up_htmx);
+        var left_div = new Div("").htmx(Game.left_htmx);
+        var right_div = new Div("").htmx(Game.right_htmx);
+        var down_div = new Div("").htmx(Game.down_htmx);
+        var mark_div = new Div("").htmx(Game.mark_htmx);
         var confirm_div = new Div("").htmx(Game.confirm_htmx);
         var paragraph = new Paragraph(this.innerHtml())
                 .id("board")
