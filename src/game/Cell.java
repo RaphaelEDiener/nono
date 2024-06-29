@@ -22,7 +22,7 @@ public enum Cell {
         };
     }
 
-    public Cell fromVal(byte x) {
+    public static Cell fromVal(byte x) {
         return switch (x) {
             case 1 -> FILLED;
             case 0 -> EMPTY;

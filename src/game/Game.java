@@ -77,11 +77,20 @@ public class Game {
             var width = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var height = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var read = stream.readNBytes(width * height);
-            for (var cell : this.data) {
-                stream.write(cell.toVal());
+            var data = new ArrayList<Cell>();
+            for (var b : read) {
+            	data.add(Cell.fromVal(b));
+                
             }
 
-            ans = Optional.of(new Game(width, height, data, new Cursor(0, 0), 0, name));
+            ans = Optional.of(new Game(
+            		width, 
+            		height,
+            		data.stream().toArray(Cell[]::new),
+            		new Cursor(0, 0),
+            		0,
+            		name
+            	));
         }
         catch (Exception ignore) {
         }
