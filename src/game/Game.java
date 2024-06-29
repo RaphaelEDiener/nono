@@ -151,21 +151,13 @@ public class Game {
         return this;
     }
 
-    public void convert() {
-    }
-
     public void save() {
-        var converted_data = new byte[this.width * this.height];
-        var stream = new FileOutputStream();
+        var stream = new FileOutputStream(this.name);
         stream.write(this.width);
         stream.write(this.height);
         for (var cell : this.data) {
-            switch (cell) {
-                case FILLED -> 1;
-                case MARKED, CURSOR, EMPTY -> 0;
-            }
+            stream.write(cell.toVal());
         }
-        stream.write(converted_data);
     }
 
     public String innerHtml() {
