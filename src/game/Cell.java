@@ -2,13 +2,13 @@ package src.game;
 
 public enum Cell {
     FILLED(0),
-    EMPTY(1),
+    EMPTY (1),
     MARKED(2),
     CURSOR(3);
 
     private final int val;
 
-    Cell(int x){
+    Cell(int x) {
         this.val = x;
     }
 
