@@ -1,6 +1,8 @@
 package src.game;
 
 import static java.lang.Math.*;
+
+import java.io.FileOutputStream;
 import java.util.*;
 import src.html.*;
 
@@ -96,10 +98,11 @@ public class Game {
     }
     
     public Game create() {
-    	//name
-    	//size
+    	//ask for name , width and height
     	return new Game(width,height,name);
     }
+    
+    
     public Game check(data1,data2) {
     	var current = Arrays.copyOf(data1.data, data1.width * data1.height);
     	var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
@@ -111,8 +114,9 @@ public class Game {
     	int filledC = 0;
     	int filledS = 0;
     	int cellNumber = 0;
+    	int collumsNumb = 0;
     	
-    	//
+    	
     	for(int y = 0; y < data1.width; y++) {
     		for(int x = 0; x < data1.height; x++) {
     			if(data1.cell[cellNumber] == Cell.FILLED ) {
@@ -129,9 +133,13 @@ public class Game {
     		if(filledC != filledS && cellCorrect == false) {
     			return LineError(y+1);
     		}
-    	})
-    	
-    	
+    	}
+    	for(int y = 0; y < data1.width; y++) {
+//    		for(int x = 0; x < data1.height, x++)
+    		if(data1.cell[data1])
+    		
+    	}
+    	 
     	
     	 
     	
