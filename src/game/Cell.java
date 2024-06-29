@@ -34,5 +34,4 @@ public enum Cell {
     public byte toVal() {
         return this.val;
     }
-
 }

@@ -10,8 +10,8 @@ public class Game {
 
     public final int width;
     public final int height;
-    private final Cell[] data;
-    private final Cursor cursor;
+    public final Cell[] data;
+    public final Cursor cursor;
     public final String name;
     public final int clicks;
     private static final HTMX up_htmx =
@@ -79,18 +79,18 @@ public class Game {
             var read = stream.readNBytes(width * height);
             var data = new ArrayList<Cell>();
             for (var b : read) {
-            	data.add(Cell.fromVal(b));
-                
+                data.add(Cell.fromVal(b));
+
             }
 
             ans = Optional.of(new Game(
-            		width, 
-            		height,
-            		data.stream().toArray(Cell[]::new),
-            		new Cursor(0, 0),
-            		0,
-            		name
-            	));
+                    width,
+                    height,
+                    data.stream().toArray(Cell[]::new),
+                    new Cursor(0, 0),
+                    0,
+                    name
+            ));
         }
         catch (Exception ignore) {
         }
@@ -144,49 +144,51 @@ public class Game {
         //save for create project?
     }
 
-    public Game check(Game solved) {
-        var current = Arrays.copyOf(this.data, this.width * this.height);
-        var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
+    // public Game check(Game solved) {
+    //     var current = Arrays.copyOf(this.data, this.width * this.height);
+    //     var solved = Arrays.copyOf(data2.data, data2.width * data2.height);
 
-        boolean lineCorrect = true;
-        boolean rowCorrect = true;
-        boolean cellCorrect = true;
+    //     boolean lineCorrect = true;
+    //     boolean rowCorrect = true;
+    //     boolean cellCorrect = true;
 
-        int filledC = 0;
-        int filledS = 0;
-        int cellNumber = 0;
-        int collumsNumb = 0;
+    //     int filledC = 0;
+    //     int filledS = 0;
+    //     int cellNumber = 0;
+    //     int collumsNumb = 0;
 
-        for (int y = 0; y < this.height; y++) {
-            for (int x = 0; x < this.width; x++) {
-                if (this.cell[cellNumber] == Cell.FILLED) {
-                    filledC++;
-                }
-                if (data2.cell[cellNumber] == Cell.FILLED) {
-                    filledS++;
-                }
-                if (this.cell[cellNumber] != data2.cell[cellNumber]) {
-                    cellCorrect = false;
-                }
-                cellNumber++;
-            }
-            if (filledC != filledS && cellCorrect == false) {
-                return LineError(y + 1);
-            }
-        }
-        for (int y = 0; y < this.width; y++) {
-//    		for(int x = 0; x < this.height, x++)
-            if (this.cell[data1])
+    //     for (int y = 0; y < this.height; y++) {
+    //         for (int x = 0; x < this.width; x++) {
+    //             if (this.cell[cellNumber] == Cell.FILLED) {
+    //                 filledC++;
+    //             }
+    //             if (data2.cell[cellNumber] == Cell.FILLED) {
+    //                 filledS++;
+    //             }
+    //             if (this.cell[cellNumber] != data2.cell[cellNumber]) {
+    //                 cellCorrect = false;
+    //             }
+    //             cellNumber++;
+    //         }
+    //         if (filledC != filledS && cellCorrect == false) {
+    //             return LineError(y + 1);
+    //         }
+    //     }
+    //     for (int y = 0; y < this.width; y++) {
+    //   		for(int x = 0; x < this.height, x++)
+    //         if (this.cell[data1])
 
-        }
+    //     }
 
-    }
+    // }
 
-    private void save() {
+    public void save() {
         try {
             var stream = new FileOutputStream(this.name);
-            stream.write(this.width);
-            stream.write(this.height);
+            byte[] width = ByteBuffer.allocate(4).putInt(this.width).array();
+            byte[] height= ByteBuffer.allocate(4).putInt(this.height).array();
+            stream.write(width);
+            stream.write(height);
             for (var cell : this.data) {
                 stream.write(cell.toVal());
             }
@@ -226,5 +228,25 @@ public class Game {
         return paragraph.toHtml() + confirm_div.toHtml() + mark_div.toHtml() + up_div.toHtml()
                 + left_div.toHtml() + right_div.toHtml()
                 + down_div.toHtml();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Game other)) return false;
+        else {
+            if (this.width != other.width) return false;
+            if (this.height != other.height) return false;
+            if (!this.name.equals(other.name)) return false;
+            // TODO: this check doesn't work. needs element wise compare via switch because java == ass
+            for (int i = 0; i < this.data.length; i++) {
+                if (this.data[i].equals(this.data[i])) return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
