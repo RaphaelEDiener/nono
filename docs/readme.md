@@ -126,8 +126,21 @@ We've decided on the following game states:
 - Solving
 - Creating
 
+#### Remarks on terse code
 
+The java collections library is as terrible as I've remembered.
+Most of the "game" can be reduced (pun intended) to a simple map-filter-reduce sequence.
+Reading and writing from disc?
+-> Read, map, done or map, write, done respectively.
+Checking for solved?
+-> Pre-scan, split, max-reduce, done.
+Yet even the most basic of operations for streaming/mapping/filtering is not implemented for
+the vast number of types inside java.
+This leads to the increased reliance of slow and eager for loops instead of lazy fast iterators.
 
+Java is even after 30 years of existence in a worse state of usability 
+and less coherent, than the much younger Ocaml/Zig/Gleam.
+What a shame.
 
 
 

@@ -13,21 +13,22 @@ public class Server {
     private final Response not_found_response;
     private final Response htaccess;
     private final Response favicon;
-    private static final Response default_not_found_response = new Response(
+    private final HashMap<String, String> redirects;
+    private static final Response default_not_found_response = Response.ok(
             Protocol.HTTP1_1,
             StatusCode.NOT_FOUND,
             ContextType.TEXT_HTML,
             "<h1> 404 - Page not found </h1>",
             StandardCharsets.UTF_8
     );
-    private static final Response default_htaccess = new Response(
+    private static final Response default_htaccess = Response.ok(
             Protocol.HTTP1_1,
             StatusCode.OK,
             ContextType.TEXT_PLAIN,
             "ErrorDocument 404 /not-found-page",
             StandardCharsets.UTF_8
     );
-    private static final Response default_favicon = new Response(
+    private static final Response default_favicon = Response.ok(
             Protocol.HTTP1_1,
             StatusCode.OK,
             ContextType.IMAGE_SVG,
@@ -74,9 +75,10 @@ id="path4" />
         this.not_found_response = old.not_found_response;
         this.htaccess = old.htaccess;
         this.favicon = old.favicon;
+        this.redirects = old.redirects;
     }
 
-    public Server(int port) throws IOException
+    public Server(HashMap<String, String> redirects, int port) throws IOException
     {
         this.socket = new ServerSocket(port);
         this.port = port;
@@ -84,9 +86,10 @@ id="path4" />
         this.not_found_response = Server.default_not_found_response;
         this.favicon = Server.default_favicon;
         this.htaccess = Server.default_htaccess;
+        this.redirects = redirects;
     }
 
-    public Server()
+    public Server(HashMap<String, String> redirects)
     {
         int temp_port = 8000;
         ServerSocket temp_socket = null;
@@ -106,9 +109,10 @@ id="path4" />
         this.not_found_response = Server.default_not_found_response;
         this.favicon = Server.default_favicon;
         this.htaccess = Server.default_htaccess;
+        this.redirects = redirects;
     }
 
-    public Server(int port, boolean debug) throws IOException
+    public Server(HashMap<String, String> redirects, int port, boolean debug) throws IOException
     {
         this.socket = new ServerSocket(port);
         this.port = port;
@@ -116,9 +120,10 @@ id="path4" />
         this.not_found_response = Server.default_not_found_response;
         this.favicon = Server.default_favicon;
         this.htaccess = Server.default_htaccess;
+        this.redirects = redirects;
     }
 
-    public Server(boolean debug)
+    public Server(HashMap<String, String> redirects, boolean debug)
     {
         int temp_port = 8000;
         ServerSocket temp_socket = null;
@@ -138,6 +143,7 @@ id="path4" />
         this.not_found_response = Server.default_not_found_response;
         this.favicon = Server.default_favicon;
         this.htaccess = Server.default_htaccess;
+        this.redirects = redirects;
     }
 
     public Socket connect() {
@@ -165,23 +171,33 @@ id="path4" />
 
     public void respond(Request req, Socket connection) {
         this.print("---- responding... ----");
-        var type = RequestType.from_request(req);
-        // java can't pattern match over more than absolute trivial things...
-        if (type.isEmpty()) {
-            this.send(this.not_found_response, connection);
-        }
-        else if (type.get() == RequestType.SHUT_DOWN) {
-            System.exit(0);
-        }
-        else {
-            var response = switch (type.get()) {
-                case NOT_FOUND_PAGE -> this.not_found_response;
-                case FAVICON -> this.favicon;
-                case HTACCESS -> this.htaccess;
-                case SHUT_DOWN -> throw new RuntimeException(
-                        "Unreachable! Server is trying to respond after shutting down");
-            };
+        if (this.redirects.containsKey(req.url())) {
+            var response = Response.redirect(
+                    Protocol.HTTP1_1,
+                    StatusCode.SEE_OTHER,
+                    StandardCharsets.UTF_8,
+                    this.redirects.get(req.url())
+            );
             this.send(response, connection);
+        } else {
+            var type = RequestType.from_request(req);
+            // java can't pattern match over more than absolute trivial things...
+            if (type.isEmpty()) {
+                this.send(this.not_found_response, connection);
+            }
+            else if (type.get() == RequestType.SHUT_DOWN) {
+                System.exit(0);
+            }
+            else {
+                var response = switch (type.get()) {
+                    case NOT_FOUND_PAGE -> this.not_found_response;
+                    case FAVICON -> this.favicon;
+                    case HTACCESS -> this.htaccess;
+                    case SHUT_DOWN -> throw new RuntimeException(
+                            "Unreachable! Server is trying to respond after shutting down");
+                };
+                this.send(response, connection);
+            }
         }
         this.print("---- responded! ----");
     }

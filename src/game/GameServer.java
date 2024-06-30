@@ -2,6 +2,7 @@ package src.game;
 
 import java.net.*;
 import java.nio.charset.*;
+import java.util.*;
 import src.html.*;
 import src.http.*;
 
@@ -14,7 +15,10 @@ public class GameServer {
     public final boolean debug;
 
     public GameServer(Game game) {
-        this.server = new Server();
+        var redirects = new HashMap<String, String>();
+        redirects.put("/", "/select/");
+        redirects.put("/play/", "/select/");
+        this.server = new Server(redirects);
         this.game = game;
         this.port = this.server.port;
         this.debug = false;
@@ -22,7 +26,10 @@ public class GameServer {
     }
 
     public GameServer(Game game, boolean debug) {
-        this.server = new Server(debug);
+        var redirects = new HashMap<String, String>();
+        redirects.put("/", "/select/");
+        redirects.put("/play/", "/select/");
+        this.server = new Server(redirects, debug);
         this.game = game;
         this.port = this.server.port;
         this.debug = debug;
@@ -45,7 +52,7 @@ public class GameServer {
             case GET_VIEW -> new Body(game.toHtml())
                     .toHtml();
         };
-        return new Response(
+        return Response.ok(
                 Protocol.HTTP1_1,
                 StatusCode.OK,
                 ContextType.TEXT_HTML,
@@ -58,17 +65,14 @@ public class GameServer {
         //noinspection InfiniteLoopStatement since it gets terminated!
         while (true) {
             Socket connection = this.server.connect();
-            if (this.debug) {
-                this.print(connection.toString());
-            }
+            this.print(connection.toString());
+
             var request = this.server.receive(connection);
-            if (this.debug) {
-                this.print(request.toString());
-            }
+            this.print(request.toString());
+
             var cmd = GameCommands.from_request(request);
-            if (this.debug) {
-                this.print(cmd.toString());
-            }
+            this.print(cmd.toString());
+
             if (cmd.isEmpty()) {
                 this.server.respond(request, connection);
             }

@@ -14,15 +14,17 @@ public enum GameCommands {
     GET_VIEW;
 
     public static Optional<GameCommands> from_request(Request request) {
+        var split = request.url().split("/");
+        if (split.length < 2) return Optional.empty();
         return switch (request.url()) {
-            case "/up" -> Optional.of(UP);
-            case "/down" -> Optional.of(DOWN);
-            case "/left" -> Optional.of(LEFT);
-            case "/right" -> Optional.of(RIGHT);
-            case "/mark" -> Optional.of(MARK);
-            case "/confirm" -> Optional.of(CONFIRM);
-            case "/back" -> Optional.of(BACK);
-            case "/" -> Optional.of(GET_VIEW);
+            case "up" -> Optional.of(UP);
+            case "down" -> Optional.of(DOWN);
+            case "left" -> Optional.of(LEFT);
+            case "right" -> Optional.of(RIGHT);
+            case "mark" -> Optional.of(MARK);
+            case "confirm" -> Optional.of(CONFIRM);
+            case "back" -> Optional.of(BACK);
+            case "" -> Optional.of(GET_VIEW);
             default -> Optional.empty();
         };
     }
