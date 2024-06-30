@@ -23,7 +23,7 @@ public final class Body implements HTML {
         return "<!doctype html><html lang=\"en-US\">"
                 + this.head.toHtml()
                 // TODO: download strip and wrap HTMX in java
-                + "<script src=\"https://unpkg.com/htmx.org@2.0.0\"></script>"
+                + "<script>" + HTMXRaw.raw + "</script>"
                 + "<body>"
                 + this.content
                 + "</body>"

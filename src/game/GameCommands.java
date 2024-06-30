@@ -27,7 +27,7 @@ public enum GameCommands {
             case "mark" -> Optional.of(MARK);
             case "confirm" -> Optional.of(CONFIRM);
             case "back" -> Optional.of(BACK);
-            case "select", "play", "create" -> Optional.of(GET_VIEW);
+            case String s when GameStates.from_string(s).isPresent() -> Optional.of(GET_VIEW);
             default -> Optional.empty();
         };
     }
