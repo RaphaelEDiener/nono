@@ -1,6 +1,7 @@
 package src.html;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class UnorderedList {
 
@@ -70,53 +71,72 @@ public class UnorderedList {
                 this.text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList htmx(HTMX htmx) {
         return new UnorderedList(
                 this.content, htmx, this.margin, this.padding, this.border, this.id,
                 this.text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList margin(Margin margin) {
         return new UnorderedList(
                 this.content, this.htmx, margin, this.padding, this.border, this.id,
                 this.text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList padding(Padding padding) {
         return new UnorderedList(
                 this.content, this.htmx, this.margin, padding, this.border, this.id,
                 this.text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList border(Border border) {
         return new UnorderedList(
                 this.content, this.htmx, this.margin, this.padding, border, this.id,
                 this.text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList id(String id) {
         return new UnorderedList(
                 this.content, this.htmx, this.margin, this.padding, this.border, id,
                 this.text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList text_align(TextAlign text_align) {
         return new UnorderedList(
                 this.content, this.htmx, this.margin, this.padding, this.border, this.id,
                 text_align, this.background_color, this.type
         );
     }
+
     public UnorderedList background_color(Color background_color) {
         return new UnorderedList(
                 this.content, this.htmx, this.margin, this.padding, this.border, this.id,
                 this.text_align, background_color, this.type
         );
     }
+
     public UnorderedList type(UnorderedListType type) {
         return new UnorderedList(
                 this.content, this.htmx, this.margin, this.padding, this.border, this.id,
                 this.text_align, this.background_color, type
         );
+    }
+
+    // TODO: styling
+    public String toHtml() {
+        var ans = String.join(
+                "",
+                StreamSupport.stream(this.content.spliterator(), false)
+                             .map(ListItem::toHtml)
+                             .toArray(String[]::new)
+        );
+        return "<ul>" + ans + "</ul>";
     }
 
 }

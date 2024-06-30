@@ -80,15 +80,17 @@ public class GameServer {
             }
         }
 
+        var lis = new ArrayList<ListItem>();
         // can't be null, since it's created above
         for (var f : Objects.requireNonNull(p.toFile().listFiles())) {
-
+            lis.add(new ListItem().content(f.getName()));
         }
+        var ul = new UnorderedList().content(lis);
         return Response.ok(
                 Protocol.HTTP1_1,
                 StatusCode.OK,
                 ContextType.TEXT_HTML,
-                new Body("TODO").toHtml(),
+                new Body(ul.toHtml()).toHtml(),
                 StandardCharsets.UTF_8
         );
     }
