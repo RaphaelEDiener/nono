@@ -3,6 +3,7 @@ package src.game;
 import static java.lang.Math.*;
 import java.io.*;
 import java.nio.*;
+import java.time.*;
 import java.util.*;
 import src.html.*;
 
@@ -14,6 +15,7 @@ public class Game {
     public final Cursor cursor;
     public final String name;
     public final int clicks;
+    public final LocalDateTime start_time;
     private static final HTMX up_htmx =
             new HTMX().addTrigger(HTMXTrigger.KeyUp).post("/up").target_id("board");
     private static final HTMX left_htmx =
@@ -26,10 +28,6 @@ public class Game {
             new HTMX().addTrigger(HTMXTrigger.KeySpace).post("/mark").target_id("board");
     private static final HTMX confirm_htmx =
             new HTMX().addTrigger(HTMXTrigger.KeyEnter).post("/confirm").target_id("board");
-    private static final HTMX play_htmx =
-            new HTMX().addTrigger(HTMXTrigger.Click).post("/play").target_id("board");
-    private static final HTMX create_htmx =
-            new HTMX().addTrigger(HTMXTrigger.Click).post("/create").target_id("board");
 
     public Game(int width, int height, String name) {
         this.name = name;
@@ -39,6 +37,7 @@ public class Game {
         Arrays.fill(data, Cell.EMPTY);
         this.cursor = new Cursor(0, 0);
         this.clicks = 0;
+        this.start_time = LocalDateTime.now();
     }
 
     public Game(Game old, Cursor cursor) {
@@ -48,15 +47,26 @@ public class Game {
         this.cursor = cursor;
         this.clicks = old.clicks;
         this.name = old.name;
+        this.start_time = old.start_time;
     }
 
-    public Game(int width, int height, Cell[] data, Cursor cursor, int clicks, String name) {
+    public Game(
+            int width,
+            int height,
+            Cell[] data,
+            Cursor cursor,
+            int clicks,
+            String name,
+            LocalDateTime start_time
+    )
+    {
         this.width = width;
         this.height = height;
         this.data = data;
         this.cursor = cursor;
         this.clicks = clicks;
         this.name = name;
+        this.start_time = start_time;
     }
 
     public Game(Game old, Cell cell, int x, int y, int clicks) {
@@ -68,6 +78,7 @@ public class Game {
         this.data = new_data;
         this.clicks = clicks;
         this.name = old.name;
+        this.start_time = old.start_time;
     }
 
     public static Optional<Game> fromSave(String name) {
@@ -77,19 +88,21 @@ public class Game {
             var width = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var height = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var read = stream.readNBytes(width * height);
+            // solved this cursed way because java's stream api is half-baked bs!
             var data = new ArrayList<Cell>();
             for (var b : read) {
                 data.add(Cell.fromVal(b));
-
             }
+            var start_time = LocalDateTime.now();
 
             ans = Optional.of(new Game(
                     width,
                     height,
-                    data.stream().toArray(Cell[]::new),
+                    data.toArray(Cell[]::new),
                     new Cursor(0, 0),
                     0,
-                    name
+                    name,
+                    start_time
             ));
         }
         catch (Exception ignore) {
@@ -134,14 +147,15 @@ public class Game {
     public Game confirm() {
         var old_cell = this.data[this.cursor.x() + this.cursor.y() * this.width];
         var new_cell = old_cell == Cell.FILLED ? Cell.EMPTY : Cell.FILLED;
-        return new Game(
+        var ans = new Game(
                 this,
                 new_cell,
                 this.cursor.x(),
                 this.cursor.y(),
                 this.clicks + 1
         );
-        //save for create project?
+        ans.save();
+        return ans;
     }
 
     // public Game check(Game solved) {
@@ -186,18 +200,15 @@ public class Game {
         try {
             var stream = new FileOutputStream(this.name);
             byte[] width = ByteBuffer.allocate(4).putInt(this.width).array();
-            byte[] height= ByteBuffer.allocate(4).putInt(this.height).array();
+            byte[] height = ByteBuffer.allocate(4).putInt(this.height).array();
             stream.write(width);
             stream.write(height);
             for (var cell : this.data) {
                 stream.write(cell.toVal());
             }
         }
-        catch (FileNotFoundException e) {
+        catch (Exception e) {
             throw new RuntimeException(e.getMessage());
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -230,22 +241,36 @@ public class Game {
                 + down_div.toHtml();
     }
 
-    @Override
+    /**
+     * equality checks the width, height, name and field data for equality. it doesn't consider
+     * cursor position or clicks
+     *
+     * @param obj to compare to
+     * @return if they are equal
+     */
     public boolean equals(final Object obj) {
-        if (!(obj instanceof Game other)) return false;
+        if (!(obj instanceof Game other)) {
+            return false;
+        }
         else {
-            if (this.width != other.width) return false;
-            if (this.height != other.height) return false;
-            if (!this.name.equals(other.name)) return false;
-            // TODO: this check doesn't work. needs element wise compare via switch because java == ass
+            if (this.width != other.width) {
+                return false;
+            }
+            if (this.height != other.height) {
+                return false;
+            }
+            if (!this.name.equals(other.name)) {
+                return false;
+            }
             for (int i = 0; i < this.data.length; i++) {
-                if (this.data[i].equals(this.data[i])) return false;
+                if (this.data[i] != other.data[i]) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
-    @Override
     public int hashCode() {
         return super.hashCode();
     }
