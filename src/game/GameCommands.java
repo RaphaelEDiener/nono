@@ -14,9 +14,12 @@ public enum GameCommands {
     GET_VIEW;
 
     public static Optional<GameCommands> from_request(Request request) {
-        var split = request.url().split("/");
-        if (split.length < 2) return Optional.empty();
-        return switch (request.url()) {
+        var split = Arrays.stream(request.url().split("/"))
+                          .filter(x -> !x.isEmpty())
+                          .toArray(String[]::new);
+        System.out.println(Arrays.toString(split));
+        if (split.length < 1) return Optional.empty();
+        return switch (split[split.length-1]) {
             case "up" -> Optional.of(UP);
             case "down" -> Optional.of(DOWN);
             case "left" -> Optional.of(LEFT);
@@ -24,7 +27,7 @@ public enum GameCommands {
             case "mark" -> Optional.of(MARK);
             case "confirm" -> Optional.of(CONFIRM);
             case "back" -> Optional.of(BACK);
-            case "" -> Optional.of(GET_VIEW);
+            case "select", "play", "create" -> Optional.of(GET_VIEW);
             default -> Optional.empty();
         };
     }

@@ -9,8 +9,10 @@ public enum GameStates {
     CREATING;
 
     public static Optional<GameStates> from_request(Request request) {
-        var split = request.url().split("/");
-        if (split.length == 0) return Optional.empty();
+        var split = Arrays.stream(request.url().split("/"))
+                          .filter(x -> !x.isEmpty())
+                          .toArray(String[]::new);
+        if (split.length < 1) return Optional.empty();
         return switch (split[0]) {
             case "select" -> Optional.of(SELECTION);
             case "play" -> Optional.of(PLAYING);

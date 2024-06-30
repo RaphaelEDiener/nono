@@ -36,7 +36,7 @@ public class GameServer {
         this.state = GameStates.SELECTION;
     }
 
-    Response handle_playing(GameCommands cmd) {
+    private Response handle_playing(GameCommands cmd) {
         this.game = switch (cmd) {
             case UP -> this.game.up();
             case DOWN -> this.game.down();
@@ -61,6 +61,25 @@ public class GameServer {
         );
     }
 
+    private Response handle_selecting(GameCommands cmd) {
+        return Response.ok(
+                Protocol.HTTP1_1,
+                StatusCode.OK,
+                ContextType.TEXT_HTML,
+                new Body("TODO").toHtml(),
+                StandardCharsets.UTF_8
+        );
+    }
+    private Response handle_creating(GameCommands cmd) {
+        return Response.ok(
+                Protocol.HTTP1_1,
+                StatusCode.OK,
+                ContextType.TEXT_HTML,
+                new Body("TODO").toHtml(),
+                StandardCharsets.UTF_8
+        );
+    }
+
     public void start() {
         //noinspection InfiniteLoopStatement since it gets terminated!
         while (true) {
@@ -70,6 +89,10 @@ public class GameServer {
             var request = this.server.receive(connection);
             this.print(request.toString());
 
+            var state = GameStates.from_request(request);
+            this.state = state.orElseGet(() -> this.state);
+            this.print(state.toString());
+
             var cmd = GameCommands.from_request(request);
             this.print(cmd.toString());
 
@@ -78,7 +101,9 @@ public class GameServer {
             }
             else {
                 var response = switch (this.state) {
-                    case SELECTION, PLAYING, CREATING -> handle_playing(cmd.get());
+                    case PLAYING  -> handle_playing(cmd.get());
+                    case SELECTION -> handle_selecting(cmd.get());
+                    case CREATING -> handle_creating(cmd.get());
                 };
                 this.server.send(response, connection);
             }
