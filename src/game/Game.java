@@ -3,6 +3,7 @@ package src.game;
 import static java.lang.Math.*;
 import java.io.*;
 import java.nio.*;
+import java.nio.file.*;
 import java.time.*;
 import java.util.*;
 import src.html.*;
@@ -16,18 +17,6 @@ public class Game {
     public final String name;
     public final int clicks;
     public final LocalDateTime start_time;
-    private static final HTMX up_htmx =
-            new HTMX().addTrigger(HTMXTrigger.KeyUp).post("/up").target_id("board");
-    private static final HTMX left_htmx =
-            new HTMX().addTrigger(HTMXTrigger.KeyLeft).post("/left").target_id("board");
-    private static final HTMX right_htmx =
-            new HTMX().addTrigger(HTMXTrigger.KeyRight).post("/right").target_id("board");
-    private static final HTMX down_htmx =
-            new HTMX().addTrigger(HTMXTrigger.KeyDown).post("/down").target_id("board");
-    private static final HTMX mark_htmx =
-            new HTMX().addTrigger(HTMXTrigger.KeySpace).post("/mark").target_id("board");
-    private static final HTMX confirm_htmx =
-            new HTMX().addTrigger(HTMXTrigger.KeyEnter).post("/confirm").target_id("board");
 
     public Game(int width, int height, String name) {
         this.name = name;
@@ -84,7 +73,7 @@ public class Game {
     public static Optional<Game> fromSave(String name) {
         Optional<Game> ans = Optional.empty();
         try {
-            var stream = new FileInputStream(name);
+            var stream = new FileInputStream(Paths.get("saves", name).toFile());
             var width = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var height = ByteBuffer.wrap(stream.readNBytes(4)).getInt();
             var read = stream.readNBytes(width * height);
@@ -225,13 +214,31 @@ public class Game {
         return ans.toString();
     }
 
-    public String toHtml() {
-        var up_div = new Div("").htmx(Game.up_htmx);
-        var left_div = new Div("").htmx(Game.left_htmx);
-        var right_div = new Div("").htmx(Game.right_htmx);
-        var down_div = new Div("").htmx(Game.down_htmx);
-        var mark_div = new Div("").htmx(Game.mark_htmx);
-        var confirm_div = new Div("").htmx(Game.confirm_htmx);
+    public String toHtml(String base_route) {
+        var up_div = new Div("").htmx(
+                new HTMX().addTrigger(HTMXTrigger.KeyUp).post(base_route + "/up")
+                          .target_id("board")
+        );
+        var left_div = new Div("").htmx(
+                new HTMX().addTrigger(HTMXTrigger.KeyLeft).post(base_route + "/left")
+                          .target_id("board")
+        );
+        var right_div = new Div("").htmx(
+                new HTMX().addTrigger(HTMXTrigger.KeyRight).post(base_route + "/right")
+                          .target_id("board")
+        );
+        var down_div = new Div("").htmx(
+                new HTMX().addTrigger(HTMXTrigger.KeyDown).post(base_route + "/down")
+                          .target_id("board")
+        );
+        var mark_div = new Div("").htmx(
+                new HTMX().addTrigger(HTMXTrigger.KeySpace).post(base_route + "/mark")
+                          .target_id("board")
+        );
+        var confirm_div = new Div("").htmx(
+                new HTMX().addTrigger(HTMXTrigger.KeyEnter).post(base_route + "/confirm")
+                          .target_id("board")
+        );
         var paragraph = new Paragraph(this.innerHtml())
                 .id("board")
                 .border(new Border(1, WidthUnits.EM))

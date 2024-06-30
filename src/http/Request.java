@@ -2,12 +2,18 @@ package src.http;
 
 import java.util.*;
 
-public record Request(
-        RequestMethod method,
-        String url,
-        Protocol protocol,
-        byte[] content
-) {
+public class Request {
+    public final RequestMethod method;
+    public final String url;
+    public final Protocol protocol;
+    public final byte[] content;
+
+    public Request(RequestMethod method, String url, Protocol protocol, byte[] content) {
+        this.method = method;
+        this.url = url;
+        this.protocol = protocol;
+        this.content = content;
+    }
 
     public static Optional<Request> from_raw(String in) {
         var split = in.split(" ");

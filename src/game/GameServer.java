@@ -12,6 +12,7 @@ public class GameServer {
 
     private final Server server;
     private Game game;
+    private Optional<Game> target;
     private GameStates state;
     public final int port;
     public final boolean debug;
@@ -25,6 +26,7 @@ public class GameServer {
         this.port = this.server.port;
         this.debug = false;
         this.state = GameStates.SELECTION;
+        this.target = Optional.empty();
     }
 
     public GameServer(Game game, boolean debug) {
@@ -36,9 +38,17 @@ public class GameServer {
         this.port = this.server.port;
         this.debug = debug;
         this.state = GameStates.SELECTION;
+        this.target = Optional.empty();
     }
 
-    private Response handle_playing(GameCommands cmd) {
+    private Response handle_playing(GameCommands cmd, String url) {
+        // validate url
+        var split = Arrays.stream(url.split("/"))
+                          .filter(x -> !x.isEmpty())
+                          .toArray(String[]::new);
+        if (split.length < 2 || !split[1].equals("play") || Game.fromSave(split[0]).isEmpty()) {
+            return Server.default_not_found_response;
+        }
         this.game = switch (cmd) {
             case UP -> this.game.up();
             case DOWN -> this.game.down();
@@ -46,12 +56,13 @@ public class GameServer {
             case RIGHT -> this.game.right();
             case MARK -> this.game.mark();
             case CONFIRM -> this.game.confirm();
-            default -> this.game;
+            case BACK -> this.game;
+            case GET_VIEW -> Game.fromSave(split[0]).get();
         };
         var response_body = switch (cmd) {
             case CONFIRM, MARK, UP, DOWN, RIGHT, LEFT -> game.innerHtml();
             case BACK -> "";
-            case GET_VIEW -> new Body(game.toHtml())
+            case GET_VIEW -> new Body(game.toHtml(this.game.name + "/play"))
                     .toHtml();
         };
         return Response.ok(
@@ -83,7 +94,7 @@ public class GameServer {
         var lis = new ArrayList<ListItem>();
         // can't be null, since it's created above
         for (var f : Objects.requireNonNull(p.toFile().listFiles())) {
-            lis.add(new ListItem().content(f.getName()));
+            lis.add(new ListItem().content(f.getName()).link("/" + f.getName() + "/play/"));
         }
         var ul = new UnorderedList().content(lis);
         return Response.ok(
@@ -94,6 +105,7 @@ public class GameServer {
                 StandardCharsets.UTF_8
         );
     }
+
     private Response handle_creating(GameCommands cmd) {
         return Response.ok(
                 Protocol.HTTP1_1,
@@ -120,12 +132,12 @@ public class GameServer {
             var cmd = GameCommands.from_request(request);
             this.print(cmd.toString());
 
-            if (cmd.isEmpty()) {
+            if (cmd.isEmpty() || request.isEmpty()) {
                 this.server.respond(request, connection);
             }
             else {
                 var response = switch (this.state) {
-                    case PLAYING  -> handle_playing(cmd.get());
+                    case PLAYING -> handle_playing(cmd.get(), request.get().url);
                     case SELECTION -> handle_selecting(cmd.get());
                     case CREATING -> handle_creating(cmd.get());
                 };

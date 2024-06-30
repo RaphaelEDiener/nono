@@ -14,7 +14,7 @@ public class Server {
     private final Response htaccess;
     private final Response favicon;
     private final HashMap<String, String> redirects;
-    private static final Response default_not_found_response = Response.ok(
+    public static final Response default_not_found_response = Response.ok(
             Protocol.HTTP1_1,
             StatusCode.NOT_FOUND,
             ContextType.TEXT_HTML,
@@ -171,12 +171,12 @@ id="path4" />
 
     public void respond(Request req, Socket connection) {
         this.print("---- responding... ----");
-        if (this.redirects.containsKey(req.url())) {
+        if (this.redirects.containsKey(req.url)) {
             var response = Response.redirect(
                     Protocol.HTTP1_1,
                     StatusCode.SEE_OTHER,
                     StandardCharsets.UTF_8,
-                    this.redirects.get(req.url())
+                    this.redirects.get(req.url)
             );
             this.send(response, connection);
         } else {

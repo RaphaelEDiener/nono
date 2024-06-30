@@ -14,10 +14,9 @@ public enum GameCommands {
     GET_VIEW;
 
     public static Optional<GameCommands> from_request(Request request) {
-        var split = Arrays.stream(request.url().split("/"))
+        var split = Arrays.stream(request.url.split("/"))
                           .filter(x -> !x.isEmpty())
                           .toArray(String[]::new);
-        System.out.println(Arrays.toString(split));
         if (split.length < 1) return Optional.empty();
         return switch (split[split.length-1]) {
             case "up" -> Optional.of(UP);

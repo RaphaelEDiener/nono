@@ -9,11 +9,15 @@ public enum GameStates {
     CREATING;
 
     public static Optional<GameStates> from_request(Request request) {
-        var split = Arrays.stream(request.url().split("/"))
+        var split = Arrays.stream(request.url.split("/"))
                           .filter(x -> !x.isEmpty())
                           .toArray(String[]::new);
         if (split.length < 1) return Optional.empty();
-        return GameStates.from_string(split[0]);
+        if (split.length == 1) {
+            return GameStates.from_string(split[0]);
+        } else {
+            return GameStates.from_string(split[1]);
+        }
     }
 
     public static Optional<GameStates> from_request(Optional<Request> optionalRequest) {
